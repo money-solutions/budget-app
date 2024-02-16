@@ -1,7 +1,7 @@
-require('dotenv/config'); 
+require('dotenv').config();
 const express = require('express');
-const db = require('./db');
-const userRouter = require('./routes/userRoutes');
+const db = require('./src/services/db');
+const userRouter = require('./src/routes/userRoutes');
 
 const app = express();
 app.use(express.json());
@@ -10,6 +10,7 @@ app.use('/user', userRouter);
 
 app.get('/', async (req, res) => {
     try {
+        console.log('Request made:')
         const result = await db.query('SELECT * FROM Users');
         res.json(result.rows);
     } catch (err) {
