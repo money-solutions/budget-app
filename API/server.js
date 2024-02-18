@@ -1,23 +1,22 @@
 require('dotenv').config();
 const express = require('express');
-const db = require('./src/services/db');
-const userRouter = require('./src/routes/userRoutes');
+const session = require('express-session');
+const loginRouter = require('./src/routes/login');
 
 const app = express();
+
+// Use express.json() as global middleware
 app.use(express.json());
 
-app.use('/user', userRouter);
+// Session middleware
+app.use(session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: true
+  }));
 
-app.get('/', async (req, res) => {
-    try {
-        console.log('Request made:')
-        const result = await db.query('SELECT * FROM Users');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('<h1>Internal Service Error</h1>');
-    }
-});
+// API Endpoints
+app.use('/login', loginRouter);
 
 app.get('/status', async (req, res) => {
     const status = {
@@ -30,3 +29,5 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
+
+module.exports = app;
