@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Backend of Budget App",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "mocha --experimental-vm-modules ./test/login.test.js"
   },
