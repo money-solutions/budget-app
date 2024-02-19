@@ -11,7 +11,7 @@ async function queryDB(text, params) {
         const result = await client.query(text, params);
         const duration = Date.now() - start;
         console.log('Executed query:', { text, duration, rows: result.rowCount });
-        return result.rows;
+        return result;
     } finally {
         client.release();
     }
