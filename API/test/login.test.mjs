@@ -8,7 +8,7 @@ describe('Login Endpoint Test:', () => {
   it('should return status 200 and a success message with valid credentials', async () => {
     const res = await chai.request(app)
       .post('/login')
-      .send({ username: 'harry', password: 'harrypass' });
+      .send({ username: 'test_username', password: 'test_password' });
 
     expect(res).to.have.status(200);
     expect(res.body).to.have.property('message').to.equal('Login successful!');
