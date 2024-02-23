@@ -10,24 +10,22 @@ const signup = async (req, res) => {
     }
 
     console.log(`Signup request made with input username: '${username}'`);
-    
+
     try {
         
         const isUsernameUnique = await checkIfUserExists(username);
 
         if (isUsernameUnique) {
             const isUserCreated = await createUser(username, password, firstname, lastname);
-
             if (isUserCreated) {
                 // User Creation successful
                 req.session.user = username; // Store username in session
                 sendResponse200(res, 'Signup successful!')
             }
+        } else {
+            // Signup unsuccessful
+            return res.status(401).json({ message: 'Invalid credentials. Username already in use.' });
         }
-
-        // Signup unsuccessful
-        return res.status(401).json({ message: 'Invalid credentials. Username already in use.' });
-        
         
     } catch (error) {
         console.error('Error signing up user:', error);

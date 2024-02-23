@@ -5,8 +5,8 @@ const comparePasswords = require('../utils/comparePasswords');
 async function createUser(username, password, firstname, lastname) {    
     const hashedPassword = await hashPassword(password);
     const query = 'INSERT INTO Users (username, password, firstname, lastname) VALUES ($1, $2, $3, $4)';
-    const { rows } = await queryDB(query, [username, hashedPassword, firstname, lastname]);
-    return rows.length === 1;
+    const { rowCount } = await queryDB(query, [username, hashedPassword, firstname, lastname]);
+    return rowCount === 1;
 }
 
 async function checkIfUserExists(username) {
@@ -26,8 +26,15 @@ async function authenticateUser(username, password) {
     return passwordsMatch;
 }
 
+async function deleteUser(username) {
+  const query = 'DELETE FROM Users WHERE username = $1';
+  const result = await queryDB(query, [username]);
+  return result;
+}
+
 module.exports = {
   createUser,
   checkIfUserExists,
   authenticateUser,
+  deleteUser,
 };
