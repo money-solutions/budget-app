@@ -13,7 +13,7 @@ We are creating a easily navigable budget creator for users. Users will be able 
 # To run include a .env in the API directory with:
 ```sh
 PORT=8000
-DB_USER="Johnny"
+DB_USER=""
 DB_HOST="localhost"
 DB_NAME="budget-app-db"
 DB_PASSWORD=""
