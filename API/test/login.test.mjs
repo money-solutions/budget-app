@@ -7,7 +7,7 @@ const chai = use(chaiHttp);
 describe('Login Endpoint Test:', () => {
   it('should return status 200 and a success message with valid credentials', async () => {
     const res = await chai.request(app)
-      .post('/login')
+      .post('/api/login')
       .send({ username: 'test_username', password: 'test_password' });
 
     expect(res).to.have.status(200);
@@ -16,7 +16,7 @@ describe('Login Endpoint Test:', () => {
 
   it('should return status 401 with invalid credentials', async () => {
     const res = await chai.request(app)
-      .post('/login')
+      .post('/api/login')
       .send({ username: 'invalid_username', password: 'invalid_password' });
 
     expect(res).to.have.status(401);
