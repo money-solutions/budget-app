@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const loginRouter = require('./src/routes/login');
+const signupRouter = require('./src/routes/signup');
 
 const app = express();
 
@@ -12,8 +13,6 @@ function logRequests(req, res, next) {
 }
 // Attach the middleware to your server
 app.use(logRequests);
-
-
 
 // Use express.json() as global middleware
 app.use(express.json());
@@ -26,7 +25,8 @@ app.use(session({
   }));
 
 // API Endpoints
-app.use('/login', loginRouter);
+app.use('/api/login', loginRouter);
+app.use('/api/signup', signupRouter);
 
 app.get('/status', async (req, res) => {
     const status = {
