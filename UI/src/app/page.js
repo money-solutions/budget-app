@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import axiosInstance from '../config/axiosConfig';
 import styles from "./page.module.css";
 import TextField from '@mui/material/TextField';
@@ -14,9 +14,10 @@ export default function Home() {
   const [password, setPassword] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
+  const [allFieldsFilled, setAllFieldsFilled] = useState(false);
 
   const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
+  setUsername(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
@@ -31,6 +32,10 @@ export default function Home() {
     setLastname(event.target.value);
   };
 
+  useEffect(() => {
+    handleInputChange();
+  }, [username, password, firstname, lastname])
+
   const handleSignUp = async () => {
     try {
       const response = await axiosInstance.post('/signup', {
@@ -44,6 +49,15 @@ export default function Home() {
       console.error('Error:', error);
     }
   };
+
+  const handleInputChange = () => {
+    // Check if all fields are filled
+    const fields = [username, password, firstname, lastname]
+    console.log(fields)
+    const allFilled = fields.every(val => val.trim() !== '');
+    setAllFieldsFilled(allFilled);
+  };
+
 
   return (
     <main className={styles.main}>
@@ -83,6 +97,7 @@ export default function Home() {
           <Button 
             variant="contained"
             color="primary"
+            disabled={!allFieldsFilled}
             onClick={handleSignUp}
           >
             Sign Up
