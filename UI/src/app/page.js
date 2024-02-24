@@ -1,94 +1,93 @@
-import Image from "next/image";
+'use client'
+
+import React, { useState } from 'react';
+import axiosInstance from '../config/axiosConfig';
 import styles from "./page.module.css";
+import TextField from '@mui/material/TextField';
+import { Stack } from '@mui/material';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
 
 export default function Home() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleFirstnameChange = (event) => {
+    setFirstname(event.target.value);
+  };
+
+  const handleLastnameChange = (event) => {
+    setLastname(event.target.value);
+  };
+
+  const handleSignUp = async () => {
+    try {
+      const response = await axiosInstance.post('/signup', {
+        username: username,
+        password: password,
+        firstname: firstname,
+        lastname: lastname,
+      });
+      console.log('POST request successful:', response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <div>
+        
+        <Stack spacing={1}>
+          <Typography variant="h5" gutterBottom>
+            Welcome To Our Budget App!
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Please Sign Up:
+          </Typography>
+          <TextField
+            required
+            id="outlined-required"
+            label="Username"
+            onChange={handleUsernameChange}
+          />
+          <TextField
+            required
+            id="outlined-required"
+            label="Password"
+            onChange={handlePasswordChange}
+          />
+          <TextField
+            required
+            id="outlined-required"
+            label="First Name"
+            onChange={handleFirstnameChange}
+          />
+          <TextField
+            required
+            id="outlined-required"
+            label="Last Name"
+            onChange={handleLastnameChange}
+          />
+          <Button 
+            variant="contained"
+            color="primary"
+            onClick={handleSignUp}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+            Sign Up
+          </Button>
+        </Stack>
       </div>
     </main>
   );

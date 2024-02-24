@@ -3,8 +3,10 @@ const express = require('express');
 const session = require('express-session');
 const loginRouter = require('./src/routes/login');
 const signupRouter = require('./src/routes/signup');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 
 // Middleware function to log ALL incoming requests
 function logRequests(req, res, next) {
