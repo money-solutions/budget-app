@@ -70,7 +70,7 @@ export default function Home() {
     <main className={styles.main}>
       <div>
         
-        <Stack spacing={1}>
+        <Stack spacing={2}>
           <Typography variant="h5" gutterBottom>
             Welcome To Our Budget App!
           </Typography>
@@ -87,6 +87,7 @@ export default function Home() {
             required
             id="outlined-required"
             label="Password"
+            type='password'
             onChange={handlePasswordChange}
           />
           <TextField
