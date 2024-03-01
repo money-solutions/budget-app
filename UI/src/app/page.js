@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import Cookies from 'js-cookie';
 
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
+  const [sessionID, setSessionID] = useState(Cookies.get('sessionID') || '');
 
   const handleUsernameChange = (event) => {
   setUsername(event.target.value);
@@ -44,6 +46,11 @@ export default function Home() {
         firstname: firstname,
         lastname: lastname,
       });
+
+      const sessionID = response.headers['session-id'];
+      Cookies.set('sessionID', sessionID, { expires: 7 }); // Expires in 7 days
+      setSessionID(sessionID);
+
       console.log('POST request successful:', response.data);
     } catch (error) {
       console.error('Error:', error);
