@@ -15,7 +15,7 @@ We are creating a easily navigable budget creator for users. Users will be able 
 1. Ensure your local Postgres server is running
 2. Make the budget-app/API your working directory
 3. Include a .env in the root API directory in the following format (ensure the PORT is set to 8000 as it is the default value in the UI's API requests):
-```json
+```
 PORT=8000
 DB_USER=""
 DB_HOST="localhost"
