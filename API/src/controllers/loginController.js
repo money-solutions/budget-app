@@ -1,6 +1,4 @@
-const queryDB = require('../services/db');
 const { authenticateUser } = require('../services/userService');
-const sendResponse200 = require('../utils/sendResponse200');
 
 const login = async (req, res) => {
     const { username, password } = req.body;

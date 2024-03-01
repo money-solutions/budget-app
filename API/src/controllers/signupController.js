@@ -1,6 +1,4 @@
-const queryDB = require('../services/db');
 const { checkIfUserExists, createUser } = require('../services/userService');
-const sendResponse200 = require('../utils/sendResponse200');
 
 const signup = async (req, res) => {
     const { username, password, firstname, lastname } = req.body;

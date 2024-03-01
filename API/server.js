@@ -3,6 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const loginRouter = require('./src/routes/login');
 const signupRouter = require('./src/routes/signup');
+const logoutRouter = require('./src/routes/logout');
 const cors = require('cors');
 
 const app = express();
@@ -32,6 +33,8 @@ app.use(session({
 // API Endpoints
 app.use('/api/login', loginRouter);
 app.use('/api/signup', signupRouter);
+app.use('/api/logout', logoutRouter);
+
 
 app.get('/status', async (req, res) => {
     const status = {
