@@ -9,6 +9,17 @@
   color: black;
 }
 
+.blackButton {
+  color: black;
+  margin-top: 10px;
+}
+
+.blackButton:hover {
+  background-color: white;
+  color: black;
+  text-decoration: underline;
+}
+
 .description {
   display: inherit;
   justify-content: inherit;

@@ -7,6 +7,18 @@
   min-height: 100vh;
 }
 
+.blackButton {
+  color: black;
+  border-color: black;
+  margin-top: 10px;
+}
+
+.blackButton:hover {
+  background-color: rgb(231, 231, 231);
+  border-color: black;
+  color: black;
+}
+
 .description {
   display: inherit;
   justify-content: inherit;
