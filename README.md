@@ -11,7 +11,7 @@ We are creating a easily navigable budget creator for users. Users will be able 
 - [and more]
   
 # To Run the Application
-## - First Start the Server:
+## First Start the Server:
 1. Ensure your local Postgres server is running
 2. Make the budget-app/API your working directory
 3. Include a .env in the root API directory in the following format (ensure the PORT is set to 8000 as it is the default value in the UI's API requests):
@@ -26,18 +26,18 @@ DB_PORT=5432
 4. Run `npm install` to install all dependencies
 5. Run `node server.js` to start the server
 
-## - Second, Start the FrontEnd Application:
+## Second, Start the FrontEnd Application:
 1. Ensure the server is running and on PORT 8000 
 2. Make the budget-app/UI your working directory
 3. Run `npm install` to install all dependencies
 4. Run `npm run dev` to start the frontend application
 
 # Additional Development Information
-## - To Run the Server Unit Tests (testing endpoints and functions):
+## To Run the Server Unit Tests (testing endpoints and functions):
 1. Make the budget-app/API your working directory
 2. While the server is NOT running, run `npm test`
 
-## - To initialize the tables in the Database:
+## To initialize the tables in the Database:
 1. Create the "Users" Table:
 ```sql
 CREATE TABLE Users(
