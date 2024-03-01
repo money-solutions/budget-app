@@ -1,19 +1,22 @@
 'use client'
 
 import React, { useState, useEffect, use } from 'react';
-import axiosInstance from '../config/axiosConfig';
 import styles from "./page.module.css";
-import TextField from '@mui/material/TextField';
-import { Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation'
-import Signup from '@/components/Signup';
-import Link from '@mui/material';
+import SignupForm from '@/components/SignupForm';
+import LoginForm from '@/components/LoginForm';
 
 
 export default function Home() {
+  const [showLoginForm, setShowLoginForm] = useState(true);
+  const [buttonMessage, setButtonMessage] = useState("Don't Have an Account? Click Here to Sign Up");
+
+  const toggleForm = () => {
+    setShowLoginForm(!showLoginForm);
+    setButtonMessage("Already Have an Account? Click Here to Login");
+  };
+
   return (
     <div>
 
@@ -21,9 +24,9 @@ export default function Home() {
         Welcome To Our Budget App!
       </Typography>
 
+      { showLoginForm ? <LoginForm/> : <SignupForm/>}
       
-      <Signup></Signup>
-      <Button variant="text" className={styles.blackButton}>Already Have an Account? Click Here to Login</Button>
+      <Button variant="text" className={styles.blackButton} onClick={toggleForm}> {buttonMessage} </Button>
       
     </div>
     
