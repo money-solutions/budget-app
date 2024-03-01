@@ -1,6 +1,4 @@
-const queryDB = require('../services/db');
 const { authenticateUser } = require('../services/userService');
-const sendResponse200 = require('../utils/sendResponse200');
 
 const login = async (req, res) => {
     const { username, password } = req.body;
@@ -17,7 +15,9 @@ const login = async (req, res) => {
       if (isAuthenticated) {
         // Authentication successful
         req.session.user = username; // Store username in session
-        sendResponse200(res, 'Login successful!')
+        const message = "Login successful!";
+        const sessionID = req.sessionID;
+        res.status(200).header('Session-ID', sessionID).json({ message });
       } else {
         // Authentication unsuccessful
         return res.status(401).json({ message: 'Invalid credentials' });

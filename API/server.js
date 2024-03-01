@@ -3,10 +3,13 @@ const express = require('express');
 const session = require('express-session');
 const loginRouter = require('./src/routes/login');
 const signupRouter = require('./src/routes/signup');
+const logoutRouter = require('./src/routes/logout');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    exposedHeaders: ['Session-ID']
+  }));
 
 // Middleware function to log ALL incoming requests
 function logRequests(req, res, next) {
@@ -23,12 +26,15 @@ app.use(express.json());
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week in milliseconds
   }));
 
 // API Endpoints
 app.use('/api/login', loginRouter);
 app.use('/api/signup', signupRouter);
+app.use('/api/logout', logoutRouter);
+
 
 app.get('/status', async (req, res) => {
     const status = {

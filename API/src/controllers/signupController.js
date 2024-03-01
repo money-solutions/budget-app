@@ -1,6 +1,4 @@
-const queryDB = require('../services/db');
 const { checkIfUserExists, createUser } = require('../services/userService');
-const sendResponse200 = require('../utils/sendResponse200');
 
 const signup = async (req, res) => {
     const { username, password, firstname, lastname } = req.body;
@@ -20,7 +18,9 @@ const signup = async (req, res) => {
             if (isUserCreated) {
                 // User Creation successful
                 req.session.user = username; // Store username in session
-                sendResponse200(res, 'Signup successful!')
+                const message = "Signup successful!";
+                const sessionID = req.sessionID;
+                res.status(200).header('Session-ID', sessionID).json({ message });
             }
         } else {
             // Signup unsuccessful
