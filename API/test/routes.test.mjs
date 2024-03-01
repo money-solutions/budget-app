@@ -20,7 +20,7 @@ describe('Login Endpoint Test:', () => {
       .send({ username: 'invalid_username', password: 'invalid_password' });
 
     expect(res).to.have.status(401);
-    expect(res.body).to.have.property('message').to.equal('Invalid credentials');
+    expect(res.body).to.have.property('message').to.equal('Invalid credentials.');
   });
 });
 

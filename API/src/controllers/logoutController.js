@@ -5,7 +5,7 @@ const sendResponse200 = require('../utils/sendResponse200');
 const logout = async (req, res) => {
     const { sessionID } = req.body;
     if (!sessionID) {
-      return res.status(400).json({ message: 'Missing parameters' });
+      return res.status(400).json({ message: 'Missing parameters.' });
     }
     
     try {
@@ -18,10 +18,10 @@ const logout = async (req, res) => {
             }
           });
         });
-        sendResponse200(res, "Session ended");
+        sendResponse200(res, "Session ended.");
       } catch (err) {
         console.error('Error destroying session:', err);
-        res.status(500).send('Error destroying session');
+        res.status(500).send('Error destroying session.');
       }
   };
   
