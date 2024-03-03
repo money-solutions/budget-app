@@ -45,6 +45,58 @@ CREATE TABLE Users(
     Username VARCHAR(50) NOT NULL,
     Password CHAR(60) NOT NULL,
     Firstname VARCHAR(50),
-    Lastname VARCHAR(50)
+    Lastname VARCHAR(50),
+	Email VARCHAR(50),
+	Phone BIGINT,
+	DateCreated DATE
+);
+```
+2. Create the "Account" Table:
+```sql
+CREATE TABLE Account(
+	AccountID SERIAL PRIMARY KEY,
+	Nickname VARCHAR(50),
+	Bank VARCHAR(50),
+	AccountType INT,
+	UserID INT REFERENCES Users(UserID) ON DELETE CASCADE
+);
+```
+3. Create the "Budget" Table:
+```sql
+CREATE TABLE Budget(
+	BudgetID SERIAL PRIMARY KEY,
+	BudgetYear INT,
+	BudgetMonth VARCHAR (3),
+	UserID INT REFERENCES Users(UserID) ON DELETE CASCADE
+);
+```
+4. Create the "Category" Table:
+```sql
+CREATE TABLE Category(
+	CategoryID SERIAL PRIMARY KEY,
+	CategoryName VARCHAR(50),
+	CategoryType VARCHAR(50),
+	BudgetAmount NUMERIC(12, 2),
+	Budget INT REFERENCES Budget(BudgetID) ON DELETE CASCADE
+);
+```
+5. Create the "Expense" Table:
+```sql
+CREATE TABLE Expense(
+	ExpenseID SERIAL PRIMARY KEY,
+	AccountID INT REFERENCES Account(AccountID) ON DELETE CASCADE,
+	Amount NUMERIC(12, 2),
+	Currency VARCHAR(3),
+	Description TEXT,
+	DatePosted TIMESTAMP,
+	DateTransacted TIMESTAMP,
+	Category INT REFERENCES Category(CategoryID)
+);
+```
+6. Create the "CanView" Table:
+```sql
+CREATE TABLE CanView(
+	ViewerID INT REFERENCES Users(UserID) ON DELETE CASCADE,
+	Budget INT REFERENCES Budget(BudgetID) ON DELETE CASCADE
 );
 ```
