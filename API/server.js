@@ -8,7 +8,9 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors({
-    exposedHeaders: ['Session-ID']
+    exposedHeaders: ['Session-ID'],
+    origin: 'http://localhost:3000',
+    credentials: true,
   }));
 
 // Middleware function to log ALL incoming requests

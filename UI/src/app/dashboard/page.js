@@ -16,7 +16,7 @@ export default function Home() {
     const sessionID = Cookies.get('sessionID');
     if (sessionID) {
       try {
-        const response = await axiosInstance.post('/logout', { sessionID });
+        const response = await axiosInstance.post('/logout');
         console.log('Response:', response.data);
         Cookies.remove('sessionID');
         router.push('/');

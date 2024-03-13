@@ -23,7 +23,7 @@ async function authenticateUser(username, password) {
     }
     const hashedPassword = rows[0].password;
     const passwordsMatch = await comparePasswords(password, hashedPassword);
-    return passwordsMatch;
+    return passwordsMatch ? rows[0].userid : false;
 }
 
 async function deleteUser(username) {

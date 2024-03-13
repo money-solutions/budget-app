@@ -10,11 +10,11 @@ const login = async (req, res) => {
     
     try {
       // Query the database for the user with the given username and password
-      const isAuthenticated = await authenticateUser(username, password);
+      const userID = await authenticateUser(username, password);
 
-      if (isAuthenticated) {
+      if (userID) {
         // Authentication successful
-        req.session.user = username; // Store username in session
+        req.session.user = userID; // Store username in session
         const message = "Login successful!";
         const sessionID = req.sessionID;
         res.status(200).header('Session-ID', sessionID).json({ message });

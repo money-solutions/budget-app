@@ -46,7 +46,7 @@ export default function SignupForm() {
       router.forward();
     } catch (error) {
       console.error('Error:', error);
-      const message = error.response.data.message + " Please try again."
+      const message = error.response?.data?.message + " Please try again."
       setMessage(message);
       setOpen(true);
     }

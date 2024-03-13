@@ -3,11 +3,14 @@ const sendResponse200 = require('../utils/sendResponse200');
 
 const logout = async (req, res) => {
     const sessionID = req.sessionID
-    const sessionData = req.sessionData
+  
+    const userID = req.session.user;
+    const session = req.session
 
     console.log("in the  logout")
     console.log(sessionID);
     console.log(sessionData)
+    console.log(session)
     
     try {
         await new Promise((resolve, reject) => {
