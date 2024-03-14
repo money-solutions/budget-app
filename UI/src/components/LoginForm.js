@@ -35,9 +35,9 @@ export default function SignupForm() {
     try {
       const response = await axiosInstance.post('/login', { username, password });
 
-      const sessionID = response.headers['session-id'];
-      Cookies.set('sessionID', sessionID, { expires: 7 }); // Expires in 7 days
-      setSessionID(sessionID);
+      // const sessionID = response.headers['session-id'];
+      // Cookies.set('sessionID', sessionID, { expires: 7 }); // Expires in 7 days
+      // setSessionID(sessionID);
 
       console.log('POST request successful:', response.data);
       
