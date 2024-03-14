@@ -4,7 +4,6 @@ import BasicTabs from "@/components/BasicTabs";
 import { Typography, Grid, Button } from "@mui/material";
 import styles from "./page.module.css";
 import axiosInstance from "../../config/axiosConfig";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
 export default function Home() {

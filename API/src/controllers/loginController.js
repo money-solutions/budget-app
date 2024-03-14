@@ -7,17 +7,14 @@ const login = async (req, res) => {
         return res.status(400).json({ message: "Missing parameters." });
     }
 
-    console.log(
-        `Login request made with input username: '${username}' and password: '${password}'`
-    );
+    console.log(`Login request made with input username: '${username}' and password: '${password}'`);
 
     try {
         // Query the database for the user with the given username and password
         const userID = await authenticateUser(username, password);
 
         if (userID) {
-            // Authentication successful
-            req.session.user = userID; // Store username in session
+            req.session.user = userID; // Store userID in session
             sendResponse200(res, "Login successful!");
         } else {
             // Authentication unsuccessful

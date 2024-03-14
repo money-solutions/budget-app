@@ -2,6 +2,7 @@ const sendResponse200 = require("../utils/sendResponse200");
 
 const logout = async (req, res) => {
     const sessionID = req.sessionID;
+    console.log(`Logging out user with ID: ${req.session.user}`);
 
     try {
         await new Promise((resolve, reject) => {
@@ -14,9 +15,9 @@ const logout = async (req, res) => {
             });
         });
 
-        // Clear the old Session cookie in the client
-        res.clearCookie('connect.sid', { path: '/' });
-        
+        // Clear the old Session cookie in the client when the response is sent
+        res.clearCookie("connect.sid", { path: "/" });
+
         sendResponse200(res, "Session ended.");
     } catch (err) {
         console.error("Error destroying session:", err);
