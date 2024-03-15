@@ -1,7 +1,7 @@
-const { checkIfUserExists, createUser, getUserID, authenticateUser } = require("../services/userService");
+const { checkIfUserExists, createUser, getUserID, authenticateUser, deleteUser } = require("../services/userService");
 const sendResponse200 = require("../utils/sendResponse200");
 
-const signup = async (req, res) => {
+const userSignup = async (req, res) => {
     const { username, password, firstname, lastname } = req.body;
 
     if (!username || !password || !firstname || !lastname) {
@@ -33,7 +33,7 @@ const signup = async (req, res) => {
     }
 };
 
-const login = async (req, res) => {
+const userLogin = async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).json({ message: "Missing parameters." });
@@ -58,7 +58,7 @@ const login = async (req, res) => {
     }
 };
 
-const logout = async (req, res) => {
+const userLogout = async (req, res) => {
     const sessionID = req.sessionID;
     console.log(`Logging out user with ID: ${req.session.user}`);
 
@@ -83,4 +83,22 @@ const logout = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, logout };
+const userDelete = async (req, res) => {
+    const userID = req.session.user;
+    try {
+        const isUserDeleted = await deleteUser(userID);
+        if (isUserDeleted) {
+            console.log(`User with ID: ${userID} deleted.`);
+            sendResponse200(res, "User deleted.");
+        } else {
+            // Request invalid
+            return res.status(401).json({ message: "Invalid request." });
+        }
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return res.status(500).json({ message: "Not Found" });
+    }
+
+};
+
+module.exports = { userSignup, userLogin, userLogout, userDelete };

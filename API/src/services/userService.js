@@ -38,6 +38,12 @@ async function getUserID(username) {
     return rows.length === 1 ? rows[0].userid : false;
 }
 
+async function deleteUser(userID) {
+    const query = "DELETE FROM Users WHERE UserID = $1";
+    const { rowCount } = await queryDB(query, [userID]);
+    return rowCount === 1;
+}
+
 module.exports = {
     createUser,
     checkIfUserExists,
