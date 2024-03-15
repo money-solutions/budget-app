@@ -1,7 +1,7 @@
 const { createBudget, isBudgetUnique } = require("../services/budgetService");
 const sendResponse200 = require("../utils/sendResponse200");
 
-const postBudget = async (req, res) => {
+const budgetCreate = async (req, res) => {
     const userID = req.session.user;
     const { budgetYear } = req.body;
     if (!budgetYear) {
@@ -9,9 +9,9 @@ const postBudget = async (req, res) => {
     }
 
     // Ensure User does not already have budgets for the requested year
-    const isBudgetUnique = await isBudgetUnique(userID, budgetYear);
+    const isUnique = await isBudgetUnique(userID, budgetYear);
 
-    if (isBudgetUnique) {
+    if (isUnique) {
         // Create budgets for each month of the requested year
         for (let budgetMonth = 1; budgetMonth <= 12; budgetMonth++) {
             const isBudgetCreated = await createBudget(userID, budgetYear, budgetMonth);
@@ -27,4 +27,4 @@ const postBudget = async (req, res) => {
     console.log(`Request to create budget by '${username}' and password: '${password}'`);
 };
 
-module.exports = { postBudget };
+module.exports = { budgetCreate };
