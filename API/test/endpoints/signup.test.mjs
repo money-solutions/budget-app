@@ -1,7 +1,7 @@
 export default async function signupTest(chai, app, expect) {
     describe("Signup Endpoint Test:", () => {
         it("should return status 200 and a success message with valid signup", async () => {
-            const res = await chai.request(app).post("/api/signup").send({
+            const res = await chai.request(app).post("/api/user/signup").send({
                 username: "test_user",
                 password: "test_pass",
                 firstname: "test_fname",
@@ -13,7 +13,7 @@ export default async function signupTest(chai, app, expect) {
         });
 
         it("should return status 401 with invalid credentials", async () => {
-            const res = await chai.request(app).post("/api/signup").send({
+            const res = await chai.request(app).post("/api/user/signup").send({
                 username: "test_user",
                 password: "test_pass",
                 firstname: "test_fname",

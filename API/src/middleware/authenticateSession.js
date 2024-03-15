@@ -6,7 +6,7 @@ function authenticateSession(req, res, next) {
     } else {
         // User is not authenticated, redirect to login page or send an error response
         res.status(401).json({
-            error: "Unauthorized. Invalid Session Cookie.",
+            message: "Unauthorized. Invalid Session Cookie.",
         });
     }
 }
