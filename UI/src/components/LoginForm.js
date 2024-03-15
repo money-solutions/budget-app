@@ -30,7 +30,7 @@ export default function SignupForm() {
 
     const handLogin = async () => {
         try {
-            const response = await axiosInstance.post("/login", {
+            const response = await axiosInstance.post("/user/login", {
                 username,
                 password,
             });

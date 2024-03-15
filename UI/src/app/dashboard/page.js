@@ -11,7 +11,7 @@ export default function Home() {
 
     const handleLogout = async () => {
         try {
-            const response = await axiosInstance.post("/logout");
+            const response = await axiosInstance.post("/user/logout");
             console.log("Response:", response.data);
             router.push("/");
             router.forward();

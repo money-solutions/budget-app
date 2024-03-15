@@ -40,7 +40,7 @@ export default function SignupForm() {
 
     const handleSignUp = async () => {
         try {
-            const response = await axiosInstance.post("/signup", {
+            const response = await axiosInstance.post("/user/signup", {
                 username,
                 password,
                 firstname,
