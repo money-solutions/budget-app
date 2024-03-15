@@ -1,4 +1,4 @@
-export default async function deleteUserTest(agent, expect) {
+export default async function userDeleteTest(agent, expect) {
     describe("Delete User Test:", () => {
         it("should return status 200 and a success message", async () => {
             const res = await agent.delete("/api/user").send();

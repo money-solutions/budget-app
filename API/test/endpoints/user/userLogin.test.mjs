@@ -1,4 +1,4 @@
-export default async function loginTest(agent, expect) {
+export default async function userLoginTest(agent, expect) {
     describe("Login Endpoint Test:", () => {
         it("should return status 200 and a success message with valid credentials", async () => {
             const res = await agent.post("/api/user/login").send({ username: "test_user", password: "test_pass" });

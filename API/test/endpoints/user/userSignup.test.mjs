@@ -1,4 +1,4 @@
-export default async function signupTest(chai, app, expect) {
+export default async function userSignupTest(chai, app, expect) {
     describe("Signup Endpoint Test:", () => {
         it("should return status 200 and a success message with valid signup", async () => {
             const res = await chai.request(app).post("/api/user/signup").send({

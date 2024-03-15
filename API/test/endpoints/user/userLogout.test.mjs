@@ -1,4 +1,4 @@
-export default async function logoutTest(agent, expect) {
+export default async function userLogoutTest(agent, expect) {
     describe("Logout Endpoint Test:", () => {
         it("should return status 200 and a success message with valid credentials", async () => {
             const res = await agent.post("/api/user/logout").send();
