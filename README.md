@@ -60,7 +60,7 @@ CREATE TABLE Users(
     Lastname VARCHAR(50),
 	Email VARCHAR(50),
 	Phone VARCHAR(20),
-	DateCreated DATE,
+	DateCreated DATE
 );
 ```
 
@@ -72,7 +72,7 @@ CREATE TABLE Accounts(
 	UserID INT NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
 	Nickname VARCHAR(50),
 	Bank VARCHAR(50),
-	AccountType INT,
+	AccountType INT
 );
 ```
 
@@ -84,7 +84,7 @@ CREATE TABLE Budgets(
 	UserID INT NOT NULL REFERENCES Users(UserID) ON DELETE CASCADE,
 	BudgetYear INT NOT NULL,
 	BudgetMonth INT NOT NULL,
-	CONSTRAINT unique_budget UNIQUE(UserID, BudgetYear, BudgetMonth),
+	CONSTRAINT unique_budget UNIQUE(UserID, BudgetYear, BudgetMonth)
 );
 ```
 
@@ -97,7 +97,7 @@ CREATE TABLE Categories(
 	CategoryName VARCHAR(50) NOT NULL,
 	CategoryType VARCHAR(50),
 	BudgetAmount NUMERIC(12, 2),
-	CONSTRAINT unique_category UNIQUE(BudgetID, CategoryName),
+	CONSTRAINT unique_category UNIQUE(BudgetID, CategoryName)
 );
 ```
 
@@ -112,7 +112,7 @@ CREATE TABLE Transactions(
 	Description TEXT,
 	DatePosted DATE,
 	DateTransacted DATE,
-	CategoryID INT REFERENCES Categories(CategoryID) ON DELETE SET NULL,
+	CategoryID INT REFERENCES Categories(CategoryID) ON DELETE SET NULL
 );
 ```
 
