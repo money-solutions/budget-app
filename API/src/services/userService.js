@@ -4,7 +4,7 @@ const comparePasswords = require("../utils/comparePasswords");
 
 async function createUser(username, password, firstname, lastname) {
     const hashedPassword = await hashPassword(password);
-    const query = "INSERT INTO Users (username, password, firstname, lastname) VALUES ($1, $2, $3, $4)";
+    const query = "INSERT INTO Users (Username, Password, Firstname, Lastname, DateCreated) VALUES ($1, $2, $3, $4, CURRENT_DATE)";
     const { rowCount } = await queryDB(query, [username, hashedPassword, firstname, lastname]);
     return rowCount === 1;
 }
