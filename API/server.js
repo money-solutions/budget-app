@@ -3,6 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const userRouter = require('./src/routes/user');
 const budgetRouter = require('./src/routes/budget');
+const categoryRouter = require('./src/routes/category');
 const cors = require('cors');
 
 const app = express();
@@ -33,6 +34,7 @@ app.use(session({
 // API Endpoints
 app.use('/api/user', userRouter);
 app.use('/api/budget', budgetRouter);
+app.use('/api/category', categoryRouter);
 
 
 app.get('/status', async (req, res) => {

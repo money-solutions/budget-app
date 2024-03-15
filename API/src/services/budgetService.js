@@ -12,7 +12,14 @@ async function isBudgetUnique(userID, budgetYear) {
     return rows.length === 0;
 }
 
+async function getBudgetID(userID, budgetYear, budgetMonth) {
+    const query = "SELECT BudgetID FROM Budgets WHERE UserID = $1 AND BudgetYear = $2 AND BudgetMonth = $3";
+    const { rows } = await queryDB(query, [userID, budgetYear, budgetMonth]);
+    return rows.length !== 0 ? rows[0].budgetid : false;
+}
+
 module.exports = {
     createBudget,
     isBudgetUnique,
+    getBudgetID,
 };
