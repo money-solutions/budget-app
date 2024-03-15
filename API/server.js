@@ -4,6 +4,7 @@ const session = require('express-session');
 const loginRouter = require('./src/routes/login');
 const signupRouter = require('./src/routes/signup');
 const logoutRouter = require('./src/routes/logout');
+const budgetRouter = require('./src/routes/budget');
 const cors = require('cors');
 
 const app = express();
@@ -35,6 +36,7 @@ app.use(session({
 app.use('/api/login', loginRouter);
 app.use('/api/signup', signupRouter);
 app.use('/api/logout', logoutRouter);
+app.use('/api/budget', budgetRouter);
 
 
 app.get('/status', async (req, res) => {
