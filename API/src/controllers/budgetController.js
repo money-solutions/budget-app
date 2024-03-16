@@ -23,8 +23,6 @@ const budgetCreate = async (req, res) => {
     } else {
         return res.status(400).json({ message: "Budget already exists." });
     }
-
-    console.log(`Request to create budget by '${username}' and password: '${password}'`);
 };
 
 module.exports = { budgetCreate };
