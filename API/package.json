@@ -4,7 +4,7 @@
   "description": "Backend of Budget App",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha ./test/testRunner.test.mjs"
   },
   "author": "Robert and John",
   "license": "ISC",

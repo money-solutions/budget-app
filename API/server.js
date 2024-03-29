@@ -1,16 +1,17 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const loginRouter = require('./src/routes/login');
-const signupRouter = require('./src/routes/signup');
-const logoutRouter = require('./src/routes/logout');
 const addAccountRouter = require('./src/routes/addaccount');
 const getAccountsRouter = require('./src/routes/getaccounts');
+const userRouter = require('./src/routes/user');
+const budgetRouter = require('./src/routes/budget');
+const categoryRouter = require('./src/routes/category');
 const cors = require('cors');
 
 const app = express();
 app.use(cors({
-    exposedHeaders: ['Session-ID']
+    origin: 'http://localhost:3000',
+    credentials: true,
   }));
 
 // Middleware function to log ALL incoming requests
@@ -33,11 +34,11 @@ app.use(session({
   }));
 
 // API Endpoints
-app.use('/api/login', loginRouter);
-app.use('/api/signup', signupRouter);
-app.use('/api/logout', logoutRouter);
 app.use('/api/addAccount', addAccountRouter);
 app.use('/api/getAccounts', getAccountsRouter);
+app.use('/api/user', userRouter);
+app.use('/api/budget', budgetRouter);
+app.use('/api/category', categoryRouter);
 
 
 app.get('/status', async (req, res) => {
