@@ -11,6 +11,7 @@ import budgetCreateTest from "./endpoints/budget/budgetCreate.test.mjs";
 import categoryCreateTest from "./endpoints/category/categoryCreate.test.mjs";
 import accountCreateTest from "./endpoints/account/accountCreate.test.mjs";
 import accountGetTest from "./endpoints/account/accountGet.test.mjs";
+import budgetGetTest from "./endpoints/budget/budgetGet.test.mjs";
 
 const chai = use(chaiHttp);
 const agent = chai.request.agent(app);
@@ -27,9 +28,9 @@ describe("Tests Before User Session:", async () => {
     await categoryCreateTest(agent, expect);
     await accountCreateTest(agent, expect);
     await accountGetTest(agent, expect);
+    await budgetGetTest(agent, expect);
 
     // Delete the test user and all its entities and end the session
     await userDeleteTest(agent, expect);
     await userLogoutTest(agent, expect);
-    
 });

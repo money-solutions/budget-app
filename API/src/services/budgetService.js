@@ -18,8 +18,22 @@ async function getBudgetID(userID, budgetYear, budgetMonth) {
     return rows.length !== 0 ? rows[0].budgetid : false;
 }
 
+async function doesBudgetYearExist(userID, budgetYear) {
+    const query = "SELECT * FROM Budgets WHERE UserID = $1 AND BudgetYear = $2";
+    const { rows } = await queryDB(query, [userID, budgetYear]);
+    return rows.length > 0;
+}
+
+async function getBudgets(userID, budgetYear) {
+    const query = "SELECT BudgetID, BudgetYear, BudgetMonth FROM Budgets WHERE UserID = $1 AND BudgetYear = $2 ORDER BY BudgetMonth";
+    const { rows } = await queryDB(query, [userID, budgetYear]);
+    return rows;
+}
+
 module.exports = {
     createBudget,
     isBudgetUnique,
     getBudgetID,
+    doesBudgetYearExist,
+    getBudgets,
 };
