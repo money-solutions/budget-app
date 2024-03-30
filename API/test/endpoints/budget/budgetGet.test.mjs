@@ -4,7 +4,7 @@ export default async function budgetGetTest(agent, expect) {
             const res = await agent.get("/api/budget").send({ budgetYear: 2020 });
 
             expect(res).to.have.status(200);
-            console.log(JSON.stringify(res.body.data.budgets, null, 4));
+            console.log(JSON.stringify(res.body.data, null, 4));
             expect(res.body).to.have.property("message").to.equal("Budget returned successfully");
         });
 
