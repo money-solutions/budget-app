@@ -12,7 +12,17 @@ async function isCategoryUnique(budgetID, categotyName) {
     return rows.length === 0;
 }
 
+async function getCategories(budgetIDs) {
+    const query = `SELECT BudgetID, CategoryID, CategoryName, CategoryType, BudgetAmount, (SELECT SUM(Amount) FROM Transactions WHERE CategoryID = Categories.CategoryID) AS ActualAmount   
+                FROM Categories 
+                WHERE BudgetID = ANY($1)
+                ORDER BY BudgetID`;
+    const { rows } = await queryDB(query, [budgetIDs]);
+    return rows;
+}
+
 module.exports = {
     createCategory,
     isCategoryUnique,
+    getCategories,
 };
