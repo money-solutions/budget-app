@@ -1,5 +1,7 @@
 const { returnAccounts } = require("../services/accountService");
 const { createAccount } = require("../services/accountService");
+const { deleteAccount } = require("../services/accountService");
+const { editAccount } = require("../services/accountService");
 
 const getAccounts = async (req, res) => {
     try {
@@ -40,4 +42,53 @@ const accountCreate = async (req, res) => {
     }
 };
 
-module.exports = { getAccounts, accountCreate };
+const accountDelete = async (req, res) => {
+    try {
+        const userID = req.session.user;
+        const accountId = req.body.accountid;
+
+        if (!accountId) {
+            return res.status(400).json({ message: "Missing parameters" });
+        }
+
+        console.log(`Deleting Account Account: '${accountId}' for User: '${userID}'`);
+        const isAccountDeleted = await deleteAccount(accountId);
+        if (!isAccountDeleted) {
+            return res.status(500).json({ message: "Database Server Error." });
+        }
+        const message = "Account Deleted Successfully!";
+        return res.status(200).json({ message: message });
+    } catch (error) {
+        console.error("Error deleting account:", error);
+        const message = `Not Found: ${accountId}`;
+        return res.status(500).json({ message: message });
+    }
+};
+
+const accountEdit = async (req, res) => {
+    try {
+        const userID = req.session.user;
+        
+        const accountId = req.body.accountid;
+        const name = req.body.name;
+        const bank = req.body.bank;
+        const type = req.body.type;
+
+        if (!accountId || !name || !bank || !type) {
+            return res.status(400).json({ message: "Missing parameters" });
+        }
+
+        console.log(`Editing Account: '${name}' for User: '${userID}'`);
+        const isAccountUpdated = await editAccount(accountId, name, bank, type);
+        if (!isAccountUpdated) {
+            return res.status(500).json({ message: "Database Server Error." });
+        }
+        const message = "Account Updated Successfully!";
+        return res.status(200).json({ message: message });
+    } catch (error) {
+        console.error("Error Updating account:", error);
+        return res.status(500).json({ message: "Not Found" });
+    }
+};
+
+module.exports = { getAccounts, accountCreate, accountDelete, accountEdit };

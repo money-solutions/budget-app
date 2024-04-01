@@ -21,6 +21,9 @@ import axios from "axios";
 function Accounts() {
     const [accountsData, setAccountsData] = React.useState([]);
     const [open, setOpen] = React.useState(false);
+    const [editOpen, setEditOpen] = React.useState(false);
+    const [currentAccount, setCurrentAccount] = React.useState(null);
+    const [accountid, setId] = React.useState("");
     const [name, setName] = React.useState("");
     const [bank, setBank] = React.useState("");
     const [type, setType] = React.useState("");
@@ -32,6 +35,19 @@ function Accounts() {
 
     const handleCloseModal = () => {
         setOpen(false);
+    };
+
+    const handleOpenEditModal = (account) => {
+        setCurrentAccount(account);
+        setId(account.accountid);
+        setName(account.nickname);
+        setBank(account.bank);
+        setType(account.accounttype);
+        setEditOpen(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setEditOpen(false);
     };
 
     const handleNameChange = (e) => {
@@ -63,7 +79,7 @@ function Accounts() {
 
     const handleAddAccount = async () => {
         try {
-            const response = await axiosInstance.post("/account", { name, bank, type });
+            const response = await axiosInstance.post("/account", { accountid, name, bank, type });
             console.log("POST request successful: ", response.data);
             await getAccounts();
             handleCloseModal();
@@ -72,6 +88,31 @@ function Accounts() {
             const message = error.response.data.message + " Please try again.";
             setMessage(message);
             setOpen(true);
+        }
+    };
+
+    const handleEditAccount = async () => {
+        try {
+            const response = await axiosInstance.put("/account", { accountid, name, bank, type });
+            console.log("PUT request successful: ", response.data);
+            await getAccounts();
+            handleCloseEditModal();
+        } catch (error) {
+            console.error("Error: ", error);
+            const message = error.response.data.message + " Please try again.";
+            setMessage(message);
+            setEditOpen(true);
+        }
+    };
+
+    const handleDelete = async (accountid) => {
+        console.log(accountid);
+        try {
+            const response = await axiosInstance.delete("/account", { data: { accountid } });
+            console.log("Account deleted successfully");
+            await getAccounts();
+        } catch (error) {
+            console.error("Error deleting account: ", error);
         }
     };
 
@@ -96,14 +137,22 @@ function Accounts() {
                                 <TableCell>Name</TableCell>
                                 <TableCell>Bank</TableCell>
                                 <TableCell>Type</TableCell>
+                                <TableCell>Edit</TableCell>
+                                <TableCell>Delete</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {accountsData.map((account) => (
-                                <TableRow key={account.id}>
+                                <TableRow key={account.accountid}>
                                     <TableCell>{account.nickname}</TableCell>
                                     <TableCell>{account.bank}</TableCell>
                                     <TableCell>{mapTypeToString(account.accounttype)}</TableCell>
+                                    <TableCell>
+                                        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(account)}>Edit</Button>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={() => handleDelete(account.accountid)}>Delete</Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -130,6 +179,28 @@ function Accounts() {
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button variant="contained" onClick={handleAddAccount} sx={{ bgcolor: "green", color: "white" }}>
                             Add
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
+            <Modal open={editOpen} onClose={handleCloseEditModal}>
+                <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", bgcolor: "background.paper", p: 4, width: "35%" }}>
+                    <Typography variant="h6" gutterBottom>
+                        Edit Account:
+                    </Typography>
+                    <TextField required label="Name" fullWidth value={name} onChange={handleNameChange} sx={{ mb: 2 }} />
+                    <TextField label="Bank" fullWidth value={bank} onChange={handleBankChange} sx={{ mb: 2 }} />
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel id="editTypeID">Type of Account</InputLabel>
+                        <Select label="Type of Account" labelId="editTypeID" value={type} fullWidth onChange={handleTypeChange}>
+                            <MenuItem value={1}>Checkings</MenuItem>
+                            <MenuItem value={2}>Savings</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Button variant="contained" onClick={handleEditAccount} sx={{ bgcolor: "blue", color: "white" }}>
+                            Save Changes
                         </Button>
                     </Box>
                 </Box>
