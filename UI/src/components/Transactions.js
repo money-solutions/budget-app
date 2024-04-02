@@ -15,18 +15,19 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { InputLabel, FormHelperText, FormControl } from "@mui/material";
 import axiosInstance from "@/config/axiosConfig";
-import { Router } from "next/router";
-import axios from "axios";
 
-function Accounts() {
-    const [accountsData, setAccountsData] = React.useState([]);
+
+function Transactions() {
+    const [transactionsData, setTransactionsData] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [editOpen, setEditOpen] = React.useState(false);
-    const [currentAccount, setCurrentAccount] = React.useState(null);
+    const [currentTransaction, setCurrentTransaction] = React.useState(null);
     const [accountid, setId] = React.useState("");
-    const [name, setName] = React.useState("");
-    const [bank, setBank] = React.useState("");
+    const [description, setDescription] = React.useState("");
+    const [amount, setAmount] = React.useState("");
+    const [currency, setCurrency] = React.useState("");
     const [type, setType] = React.useState("");
+    const [transactionDate, setTransactionDate] = React.useState(new Date());
     const [message, setMessage] = React.useState("");
 
     const handleOpenModal = () => {
@@ -38,7 +39,7 @@ function Accounts() {
     };
 
     const handleOpenEditModal = (account) => {
-        setCurrentAccount(account);
+        setCurrentTransaction(account);
         setId(account.accountid);
         setName(account.nickname);
         setBank(account.bank);
@@ -50,38 +51,45 @@ function Accounts() {
         setEditOpen(false);
     };
 
-    const handleNameChange = (e) => {
-        setName(e.target.value);
+    const handleDescriptionChange = (e) => {
+        setDescription(e.target.value);
     };
 
-    const handleBankChange = (e) => {
-        setBank(e.target.value);
+    const handleAmountChange = (e) => {
+        setAmount(e.target.value);
     };
 
     const handleTypeChange = (e) => {
         setType(e.target.value);
     };
 
-    const getAccounts = async () => {
+    const handleCurrencyChange = (e) => {
+        setCurrency(e.target.value);
+    }
+
+    const handleTransactionDateChange = (date) => {
+        setTransactionDate(date);
+    };
+
+    const getTransactions = async () => {
         try {
-            const response = await axiosInstance.get("/account");
-            console.log(response.data.accounts);
-            setAccountsData(response.data.accounts);
-            console.log(accountsData);
+            const response = await axiosInstance.get("/transaction");
+            setTransactionsData(response.data.transactions);
+            console.log(response.data.transactions);
         } catch (error) {
-            console.error("Error getting accounts associated with user: ", error);
+            console.error("Error getting transactions associated with user: ", error);
         }
     };
 
     React.useEffect(() => {
-        getAccounts();
+        getTransactions();
     }, []);
 
-    const handleAddAccount = async () => {
+    const handleAddTransaction = async () => {
         try {
-            const response = await axiosInstance.post("/account", { accountid, name, bank, type });
+            const response = await axiosInstance.post("/transaction", { description, amount, currency, datetransacted, categoryid, accountid });
             console.log("POST request successful: ", response.data);
-            await getAccounts();
+            await getTransactions();
             handleCloseModal();
         } catch (error) {
             console.error("Error: ", error);
@@ -93,9 +101,9 @@ function Accounts() {
 
     const handleEditAccount = async () => {
         try {
-            const response = await axiosInstance.put("/account", { accountid, name, bank, type });
+            const response = await axiosInstance.put("/transaction", { accountid, name, bank, type });
             console.log("PUT request successful: ", response.data);
-            await getAccounts();
+            await getTransactions();
             handleCloseEditModal();
         } catch (error) {
             console.error("Error: ", error);
@@ -105,14 +113,14 @@ function Accounts() {
         }
     };
 
-    const handleDelete = async (accountid) => {
-        console.log(accountid);
+    const handleDelete = async (transactionid) => {
+        console.log(transactionid);
         try {
-            const response = await axiosInstance.delete("/account", { data: { accountid } });
-            console.log("Account deleted successfully");
-            await getAccounts();
+            const response = await axiosInstance.delete("/transaction", { data: { transactionid } });
+            console.log("Transaction deleted successfully");
+            await getTransactions();
         } catch (error) {
-            console.error("Error deleting account: ", error);
+            console.error("Error deleting transaction: ", error);
         }
     };
 
@@ -122,36 +130,42 @@ function Accounts() {
 
     return (
         <Box sx={{ width: "100%" }}>
-            <Box display="flex" gap={45} marginBottom={3}>
-                <Typography variant="h5">My Accounts:</Typography>
+            <Box display="flex" gap={75} marginBottom={3}>
+                <Typography variant="h5">My Transactions:</Typography>
                 <Button variant="contained" onClick={handleOpenModal} sx={{ bgcolor: "green", color: "white" }}>
-                    Add Account
+                    Add Transaction
                 </Button>
             </Box>
 
-            {accountsData.length > 0 ? (
+            {transactionsData.length > 0 ? (
                 <TableContainer>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Bank</TableCell>
-                                <TableCell>Type</TableCell>
+                                <TableCell>Description</TableCell>
+                                <TableCell>Amount</TableCell>
+                                <TableCell>Currency</TableCell>
+                                <TableCell>Transaction Date</TableCell>
+                                <TableCell>Category</TableCell>
+                                <TableCell>Account</TableCell>
                                 <TableCell>Edit</TableCell>
                                 <TableCell>Delete</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {accountsData.map((account) => (
-                                <TableRow key={account.accountid}>
-                                    <TableCell>{account.nickname}</TableCell>
-                                    <TableCell>{account.bank}</TableCell>
-                                    <TableCell>{mapTypeToString(account.accounttype)}</TableCell>
+                            {transactionsData.map((transaction) => (
+                                <TableRow key={transaction.transactionid}>
+                                    <TableCell>{transaction.description}</TableCell>
+                                    <TableCell>{transaction.amount}</TableCell>
+                                    <TableCell>{transaction.currency}</TableCell>
+                                    <TableCell>{transaction.datetransacted}</TableCell>
+                                    <TableCell>{transaction.categoryid}</TableCell>
+                                    <TableCell>{transaction.nickname}</TableCell>
                                     <TableCell>
-                                        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(account)}>Edit</Button>
+                                        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(transaction)}>Edit</Button>
                                     </TableCell>
                                     <TableCell>
-                                        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={() => handleDelete(account.accountid)}>Delete</Button>
+                                        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={() => handleDelete(transaction.transactionid)}>Delete</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -159,25 +173,38 @@ function Accounts() {
                     </Table>
                 </TableContainer>
             ) : (
-                <Typography>No Accounts Found</Typography>
+                <Typography>No Transactions Found</Typography>
             )}
 
             <Modal open={open} onClose={handleCloseModal}>
                 <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", bgcolor: "background.paper", p: 4, width: "35%" }}>
                     <Typography variant="h6" gutterBottom>
-                        Add An Account:
+                        Add A Transaction:
                     </Typography>
-                    <TextField required label="Name" fullWidth onChange={handleNameChange} sx={{ mb: 2 }} />
-                    <TextField label="Bank" fullWidth onChange={handleBankChange} sx={{ mb: 2 }} />
+                    <TextField required label="Description" fullWidth onChange={handleDescriptionChange} sx={{ mb: 2 }} />
+                    <TextField label="Amount" fullWidth onChange={handleAmountChange} sx={{ mb: 2 }} />
                     <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="typeID">Type of Account</InputLabel>
-                        <Select label="Type of Account" labelId="typeID" value={type} fullWidth onChange={handleTypeChange}>
-                            <MenuItem value={1}>Checkings</MenuItem>
-                            <MenuItem value={2}>Savings</MenuItem>
+                        <InputLabel>Currency</InputLabel>
+                        <Select label="Currency" labelId="typeID" value={currency} fullWidth onChange={handleCurrencyChange}>
+                            <MenuItem value="USD">USD</MenuItem>
+                            <MenuItem value="EUR">EUR</MenuItem>
+                            <MenuItem value="YEN">YEN</MenuItem>
                         </Select>
                     </FormControl>
+                    <TextField 
+                        id="transaction-date"
+                        label="Transaction Date"
+                        type="date"
+                        fullWidth
+                        defaultValue={transactionDate}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={(e) => handleTransactionDateChange(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Button variant="contained" onClick={handleAddAccount} sx={{ bgcolor: "green", color: "white" }}>
+                        <Button variant="contained" onClick={handleAddTransaction} sx={{ bgcolor: "green", color: "white" }}>
                             Add
                         </Button>
                     </Box>
@@ -189,8 +216,8 @@ function Accounts() {
                     <Typography variant="h6" gutterBottom>
                         Edit Account:
                     </Typography>
-                    <TextField required label="Name" fullWidth value={name} onChange={handleNameChange} sx={{ mb: 2 }} />
-                    <TextField label="Bank" fullWidth value={bank} onChange={handleBankChange} sx={{ mb: 2 }} />
+                    <TextField required label="Description" fullWidth value={description} onChange={handleDescriptionChange} sx={{ mb: 2 }} />
+                    <TextField label="Amount" fullWidth value={amount} onChange={handleAmountChange} sx={{ mb: 2 }} />
                     <FormControl fullWidth sx={{ mb: 2 }}>
                         <InputLabel id="editTypeID">Type of Account</InputLabel>
                         <Select label="Type of Account" labelId="editTypeID" value={type} fullWidth onChange={handleTypeChange}>
@@ -209,4 +236,4 @@ function Accounts() {
     );
 }
 
-export default Accounts;
+export default Transactions;
