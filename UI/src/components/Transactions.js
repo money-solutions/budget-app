@@ -19,18 +19,22 @@ import axiosInstance from "@/config/axiosConfig";
 
 function Transactions() {
     const [transactionsData, setTransactionsData] = React.useState([]);
+    const [accountsData, setAccountsData] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [editOpen, setEditOpen] = React.useState(false);
     const [currentTransaction, setCurrentTransaction] = React.useState(null);
+    const [account, setAccount] = React.useState(null);
     const [accountid, setId] = React.useState("");
     const [description, setDescription] = React.useState("");
     const [amount, setAmount] = React.useState("");
     const [currency, setCurrency] = React.useState("");
+    const [category, setCategory] = React.useState("");
     const [type, setType] = React.useState("");
     const [transactionDate, setTransactionDate] = React.useState(new Date());
     const [message, setMessage] = React.useState("");
 
     const handleOpenModal = () => {
+        getAccounts();
         setOpen(true);
     };
 
@@ -38,12 +42,14 @@ function Transactions() {
         setOpen(false);
     };
 
-    const handleOpenEditModal = (account) => {
-        setCurrentTransaction(account);
-        setId(account.accountid);
-        setName(account.nickname);
-        setBank(account.bank);
-        setType(account.accounttype);
+    const handleOpenEditModal = (transaction) => {
+        setCurrentTransaction(transaction.transactionid);
+        setDescription(transaction.description);
+        setAmount(transaction.amount);
+        setCurrency(transaction.currency);
+        setTransactionDate(transaction.datetransacted);
+        setCategory(transaction.categoryid);
+        setAccount(transaction.accountid);
         setEditOpen(true);
     };
 
@@ -71,6 +77,15 @@ function Transactions() {
         setTransactionDate(date);
     };
 
+    const handleAccountChange = (e) => {
+        setAccount(e.target.value);
+        setId(account.accountid);
+    };
+
+    const handleCategoryChange = (e) => {
+        setCategory(e.target.value);
+    }
+
     const getTransactions = async () => {
         try {
             const response = await axiosInstance.get("/transaction");
@@ -81,40 +96,49 @@ function Transactions() {
         }
     };
 
+    const getAccounts = async () => {
+        try {
+            const response = await axiosInstance.get("/account");
+            setAccountsData(response.data.accounts);
+            console.log(response.data.accounts);
+        } catch (error) {
+            console.error("Error getting accounts associated with user: ", error);
+        }
+    };
+
     React.useEffect(() => {
         getTransactions();
     }, []);
 
     const handleAddTransaction = async () => {
         try {
-            const response = await axiosInstance.post("/transaction", { description, amount, currency, datetransacted, categoryid, accountid });
+            const response = await axiosInstance.post("/transaction", { description, amount, currency, transactionDate, category, accountid });
             console.log("POST request successful: ", response.data);
             await getTransactions();
             handleCloseModal();
         } catch (error) {
             console.error("Error: ", error);
-            const message = error.response.data.message + " Please try again.";
+            const message = " Please try again.";
             setMessage(message);
             setOpen(true);
         }
     };
 
-    const handleEditAccount = async () => {
+    const handleEditTransaction = async () => {
         try {
-            const response = await axiosInstance.put("/transaction", { accountid, name, bank, type });
+            const response = await axiosInstance.put("/transaction", { currentTransaction, description, amount, currency });
             console.log("PUT request successful: ", response.data);
             await getTransactions();
             handleCloseEditModal();
         } catch (error) {
             console.error("Error: ", error);
-            const message = error.response.data.message + " Please try again.";
+            const message = " Please try again.";
             setMessage(message);
             setEditOpen(true);
         }
     };
 
     const handleDelete = async (transactionid) => {
-        console.log(transactionid);
         try {
             const response = await axiosInstance.delete("/transaction", { data: { transactionid } });
             console.log("Transaction deleted successfully");
@@ -123,11 +147,7 @@ function Transactions() {
             console.error("Error deleting transaction: ", error);
         }
     };
-
-    const mapTypeToString = (type) => {
-        return type === 1 ? "Checkings" : "Savings";
-    };
-
+    
     return (
         <Box sx={{ width: "100%" }}>
             <Box display="flex" gap={75} marginBottom={3}>
@@ -203,6 +223,15 @@ function Transactions() {
                         onChange={(e) => handleTransactionDateChange(e.target.value)}
                         sx={{ mb: 2 }}
                     />
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel>Account</InputLabel>
+                        <Select label="Account" labelId="accountID" value={account} fullWidth onChange={handleAccountChange}>
+                            {accountsData.map((account) => (
+                                <MenuItem value={account}>{account.nickname}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <TextField required label="Category" fullWidth onChange={handleCategoryChange} sx={{ mb: 2 }} />
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button variant="contained" onClick={handleAddTransaction} sx={{ bgcolor: "green", color: "white" }}>
                             Add
@@ -214,19 +243,20 @@ function Transactions() {
             <Modal open={editOpen} onClose={handleCloseEditModal}>
                 <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", bgcolor: "background.paper", p: 4, width: "35%" }}>
                     <Typography variant="h6" gutterBottom>
-                        Edit Account:
+                        Edit Transaction:
                     </Typography>
                     <TextField required label="Description" fullWidth value={description} onChange={handleDescriptionChange} sx={{ mb: 2 }} />
                     <TextField label="Amount" fullWidth value={amount} onChange={handleAmountChange} sx={{ mb: 2 }} />
                     <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="editTypeID">Type of Account</InputLabel>
-                        <Select label="Type of Account" labelId="editTypeID" value={type} fullWidth onChange={handleTypeChange}>
-                            <MenuItem value={1}>Checkings</MenuItem>
-                            <MenuItem value={2}>Savings</MenuItem>
+                        <InputLabel>Currency</InputLabel>
+                        <Select label="Currency" labelId="typeID" value={currency} fullWidth onChange={handleCurrencyChange}>
+                            <MenuItem value="USD">USD</MenuItem>
+                            <MenuItem value="EUR">EUR</MenuItem>
+                            <MenuItem value="YEN">YEN</MenuItem>
                         </Select>
                     </FormControl>
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Button variant="contained" onClick={handleEditAccount} sx={{ bgcolor: "blue", color: "white" }}>
+                        <Button variant="contained" onClick={handleEditTransaction} sx={{ bgcolor: "blue", color: "white" }}>
                             Save Changes
                         </Button>
                     </Box>

@@ -24,18 +24,23 @@ const getTransactions = async (req, res) => {
 const transactionCreate = async (req, res) => {
     try {
         const userID = req.session.user;
-        const { name, bank, type } = req.body;
+        const description = req.body.description;
+        const amount = req.body.amount;
+        const currency = req.body.currency;
+        const transactionDate = req.body.transactionDate;
+        const accountid = req.body.accountid;
+        const categoryid = req.body.category;
 
-        if (!name || !bank || !type) {
+        if (!description || !amount || !currency || !transactionDate || !accountid || !categoryid) {
             return res.status(400).json({ message: "Missing parameters" });
         }
 
-        console.log(`Creating Account: '${name}' for User: '${userID}'`);
-        const isAccountCreated = await createAccount(name, bank, type, userID);
-        if (!isAccountCreated) {
+        console.log(`Creating Transaction: '${description}' for User: '${userID}'`);
+        const isTransactionCreated = await createTransaction(description, amount, currency, transactionDate, accountid, categoryid);
+        if (!isTransactionCreated) {
             return res.status(500).json({ message: "Database Server Error." });
         }
-        const message = "New Associated Account Created Successfully!";
+        const message = "New Associated Transaction Created Successfully!";
         return res.status(200).json({ message: message });
     } catch (error) {
         console.error("Error creating new transaction:", error);
@@ -70,21 +75,23 @@ const transactionEdit = async (req, res) => {
     try {
         const userID = req.session.user;
         
-        const transactionId = req.body.transactionid;
-        const name = req.body.name;
-        const bank = req.body.bank;
-        const type = req.body.type;
+        const transactionId = req.body.currentTransaction;
+        const description = req.body.description;
+        const amount = req.body.amount;
+        const currency = req.body.currency;
 
-        if (!transactionId || !name || !bank || !type) {
+        console.log(req.body);
+
+        if (!transactionId || !description || !amount || !currency) {
             return res.status(400).json({ message: "Missing parameters" });
         }
 
-        console.log(`Editing Account: '${name}' for User: '${userID}'`);
-        const isAccountUpdated = await editAccount(transactionId, name, bank, type);
-        if (!isAccountUpdated) {
+        console.log(`Editing Transaction: '${description}' for User: '${userID}'`);
+        const isTransactionUpdated = await editTransaction(transactionId, description, amount, currency);
+        if (!isTransactionUpdated) {
             return res.status(500).json({ message: "Database Server Error." });
         }
-        const message = "Account Updated Successfully!";
+        const message = "Transaction Updated Successfully!";
         return res.status(200).json({ message: message });
     } catch (error) {
         console.error("Error Updating transaction:", error);

@@ -26,15 +26,15 @@ async function deleteTransaction(transactionId) {
     return rowCount === 1;
 } 
 
-async function editTransaction(transactionId, accountId, description, amount, currency, dateTransacted) {
-    const query = "UPDATE Transactions SET AccountId = $2, Description = $3, amount = $4, currency = $5, DateTransacted = $6 WHERE transactionId = $1";
-    const { rowCount } = await queryDB(query, [transactionId, accountId, description, amount, currency, dateTransacted]);
+async function editTransaction(transactionId, description, amount, currency) {
+    const query = "UPDATE Transactions SET Description = $2, amount = $3, currency = $4 WHERE transactionId = $1";
+    const { rowCount } = await queryDB(query, [transactionId, description, amount, currency]);
     return rowCount === 1;
 }
 
-async function createTransaction(description, amount, currency, dateTransacted, account) {
-    const query = "INSERT INTO Transactions (description, amount, currency, dateposted, datetransacted, accountid) VALUES ($1, $2, $3, CURRENT_DATE, $4, $5)";
-    const { rowCount } = await queryDB(query, [description, amount, currency, dateTransacted, account]);
+async function createTransaction(description, amount, currency, dateTransacted, account, category) {
+    const query = "INSERT INTO Transactions (description, amount, currency, dateposted, datetransacted, accountid, categoryid) VALUES ($1, $2, $3, CURRENT_DATE, $4, $5, $6)";
+    const { rowCount } = await queryDB(query, [description, amount, currency, dateTransacted, account, category]);
     return rowCount === 1;
 }
 
