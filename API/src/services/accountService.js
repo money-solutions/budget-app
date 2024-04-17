@@ -12,7 +12,21 @@ async function returnAccounts(userID) {
     return rows.length !== 0 ? rows : false;
 }
 
+async function deleteAccount(accountId) {
+    const query = "DELETE FROM Accounts Where AccountID = $1";
+    const { rowCount } = await queryDB(query, [accountId]);
+    return rowCount === 1;
+} 
+
+async function editAccount(accountId, nickname, bank, accountType) {
+    const query = "UPDATE Accounts SET nickname = $2, bank = $3, accountType = $4 WHERE accountId = $1";
+    const { rowCount } = await queryDB(query, [accountId, nickname, bank, accountType]);
+    return rowCount === 1;
+}
+
 module.exports = {
     createAccount,
     returnAccounts,
+    deleteAccount,
+    editAccount,
 };

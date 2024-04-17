@@ -5,6 +5,7 @@ const accountRouter = require('./src/routes/account');
 const userRouter = require('./src/routes/user');
 const budgetRouter = require('./src/routes/budget');
 const categoryRouter = require('./src/routes/category');
+const transactionRouter = require('./src/routes/transaction');
 const cors = require('cors');
 
 const app = express();
@@ -37,6 +38,7 @@ app.use('/api/user', userRouter);
 app.use('/api/budget', budgetRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/account', accountRouter);
+app.use('/api/transaction', transactionRouter);
 
 
 app.get('/status', async (req, res) => {
