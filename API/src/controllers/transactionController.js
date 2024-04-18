@@ -30,8 +30,8 @@ const transactionCreate = async (req, res) => {
         const transactionDate = req.body.transactionDate;
         const accountid = req.body.accountid;
         const categoryid = req.body.category;
-
-        if (!description || !amount || !currency || !transactionDate || !accountid || !categoryid) {
+        
+        if (!description || !amount || !currency || !transactionDate || !accountid) {
             return res.status(400).json({ message: "Missing parameters" });
         }
 
@@ -74,7 +74,7 @@ const transactionDelete = async (req, res) => {
 const transactionEdit = async (req, res) => {
     try {
         const userID = req.session.user;
-        
+
         const transactionId = req.body.currentTransaction;
         const description = req.body.description;
         const amount = req.body.amount;

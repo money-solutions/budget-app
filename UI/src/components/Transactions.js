@@ -79,7 +79,7 @@ function Transactions() {
 
     const handleAccountChange = (e) => {
         setAccount(e.target.value);
-        setId(account.accountid);
+        setId(e.target.value.accountid);
     };
 
     const handleCategoryChange = (e) => {
@@ -176,16 +176,22 @@ function Transactions() {
                             {transactionsData.map((transaction) => (
                                 <TableRow key={transaction.transactionid}>
                                     <TableCell>{transaction.description}</TableCell>
-                                    <TableCell>{transaction.amount}</TableCell>
+                                    <TableCell>{`$ ${transaction.amount}`}</TableCell>
                                     <TableCell>{transaction.currency}</TableCell>
-                                    <TableCell>{transaction.datetransacted}</TableCell>
+                                    <TableCell>
+                                        {new Date(transaction.datetransacted).toLocaleDateString(undefined, { year: "numeric", month: "numeric", day: "numeric" })}
+                                    </TableCell>
                                     <TableCell>{transaction.categoryid}</TableCell>
                                     <TableCell>{transaction.nickname}</TableCell>
                                     <TableCell>
-                                        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(transaction)}>Edit</Button>
+                                        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(transaction)}>
+                                            Edit
+                                        </Button>
                                     </TableCell>
                                     <TableCell>
-                                        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={() => handleDelete(transaction.transactionid)}>Delete</Button>
+                                        <Button variant="contained" style={{ backgroundColor: "red", color: "white" }} onClick={() => handleDelete(transaction.transactionid)}>
+                                            Delete
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -211,7 +217,7 @@ function Transactions() {
                             <MenuItem value="YEN">YEN</MenuItem>
                         </Select>
                     </FormControl>
-                    <TextField 
+                    <TextField
                         id="transaction-date"
                         label="Transaction Date"
                         type="date"
