@@ -1,7 +1,5 @@
-const { returnAccounts } = require("../services/accountService");
-const { createAccount } = require("../services/accountService");
-const { deleteAccount } = require("../services/accountService");
-const { editAccount } = require("../services/accountService");
+const { returnAccounts, createAccount, deleteAccount, editAccount, getAccount } = require("../services/accountService");
+const generateRandomTransactions = require("../utils/generateTransactions");
 
 const getAccounts = async (req, res) => {
     try {
@@ -31,6 +29,14 @@ const accountCreate = async (req, res) => {
 
         console.log(`Creating Account: '${name}' for User: '${userID}'`);
         const isAccountCreated = await createAccount(name, bank, type, userID);
+
+        if (isAccountCreated) {
+            const account = await getAccount(name, bank, type, userID);
+            console.log(account);
+            const accountID = account[0].accountid;
+            generateRandomTransactions(accountID, 10);
+        }
+
         if (!isAccountCreated) {
             return res.status(500).json({ message: "Database Server Error." });
         }
@@ -68,7 +74,7 @@ const accountDelete = async (req, res) => {
 const accountEdit = async (req, res) => {
     try {
         const userID = req.session.user;
-        
+
         const accountId = req.body.accountid;
         const name = req.body.name;
         const bank = req.body.bank;

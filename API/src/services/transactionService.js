@@ -32,7 +32,8 @@ async function editTransaction(transactionId, description, amount, currency) {
     return rowCount === 1;
 }
 
-async function createTransaction(description, amount, currency, dateTransacted, account, category) {
+async function createTransaction(description, amount, currency, dateTransacted, account, categoryInput) {
+    let category = categoryInput ? categoryInput : null;
     const query = "INSERT INTO Transactions (description, amount, currency, dateposted, datetransacted, accountid, categoryid) VALUES ($1, $2, $3, CURRENT_DATE, $4, $5, $6)";
     const { rowCount } = await queryDB(query, [description, amount, currency, dateTransacted, account, category]);
     return rowCount === 1;

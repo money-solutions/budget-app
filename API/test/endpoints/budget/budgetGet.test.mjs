@@ -1,7 +1,7 @@
 export default async function budgetGetTest(agent, expect) {
     describe("Get Budget Endpoint Test:", () => {
         it("should return status 200 and a success message", async () => {
-            const res = await agent.get("/api/budget").send({ budgetYear: 2020 });
+            const res = await agent.get("/api/budget").send({ budgetYear: 2024 });
 
             expect(res).to.have.status(200);
             console.log(JSON.stringify(res.body.data, null, 4));
