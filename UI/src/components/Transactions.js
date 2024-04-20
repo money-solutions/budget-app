@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { InputLabel, FormHelperText, FormControl } from "@mui/material";
 import axiosInstance from "@/config/axiosConfig";
-
+import Paper from "@mui/material/Paper";
 
 function Transactions() {
     const [transactionsData, setTransactionsData] = React.useState([]);
@@ -71,7 +71,7 @@ function Transactions() {
 
     const handleCurrencyChange = (e) => {
         setCurrency(e.target.value);
-    }
+    };
 
     const handleTransactionDateChange = (date) => {
         setTransactionDate(date);
@@ -84,7 +84,7 @@ function Transactions() {
 
     const handleCategoryChange = (e) => {
         setCategory(e.target.value);
-    }
+    };
 
     const getTransactions = async () => {
         try {
@@ -147,29 +147,29 @@ function Transactions() {
             console.error("Error deleting transaction: ", error);
         }
     };
-    
+
     return (
         <Box sx={{ width: "100%" }}>
-            <Box display="flex" gap={75} marginBottom={3}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 45, marginBottom: 3 }}>
                 <Typography variant="h5">My Transactions:</Typography>
-                <Button variant="contained" onClick={handleOpenModal} sx={{ bgcolor: "green", color: "white" }}>
+                <Button variant="contained" onClick={handleOpenModal} sx={{ bgcolor: "green", color: "white", marginLeft: "auto" }}>
                     Add Transaction
                 </Button>
             </Box>
 
             {transactionsData.length > 0 ? (
-                <TableContainer>
+                <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Description</TableCell>
-                                <TableCell>Amount</TableCell>
-                                <TableCell>Currency</TableCell>
-                                <TableCell>Transaction Date</TableCell>
-                                <TableCell>Category</TableCell>
-                                <TableCell>Account</TableCell>
-                                <TableCell>Edit</TableCell>
-                                <TableCell>Delete</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Amount</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Currency</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Transaction Date</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Category</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Account</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Edit</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Delete</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
