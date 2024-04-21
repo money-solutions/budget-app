@@ -14,17 +14,26 @@ import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { InputLabel, FormHelperText, FormControl } from "@mui/material";
+import { InputLabel, FormHelperText, FormControl, OutlinedInput, InputAdornment } from "@mui/material";
 import { Stack, Alert, Snackbar } from "@mui/material";
 import axiosInstance from "@/config/axiosConfig";
+import BudgetTable from "./BudgetTable";
 import { Router } from "next/router";
 import Paper from "@mui/material/Paper";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 function Budgets() {
     const [budgetYear, setBudgetYear] = React.useState("None");
     const [budgetYears, setBudgetYears] = React.useState([]);
     const [newBudgetYear, setNewBudgetYear] = React.useState("");
+    const [allMonthsBudgetData, setAllMonthsBudgetData] = React.useState(null);
+    const [selectedMonth, setSelectedMonth] = React.useState(0);
+
     const [open, setOpen] = React.useState(false);
+    const [openCategoryModal, setOpenCategoryModal] = React.useState(false);
+    const [newCategoryName, setNewCategoryName] = React.useState(null);
+    const [newCategoryAmount, setNewCategoryAmount] = React.useState(null);
 
     const [accountsData, setAccountsData] = React.useState([]);
     const [openModal, setOpenModal] = React.useState(false);
@@ -43,6 +52,22 @@ function Budgets() {
 
     const handleCloseModal = () => {
         setOpenModal(false);
+    };
+
+    const handleCloseCategoryModal = () => {
+        setOpenCategoryModal(false);
+    };
+
+    const handleOpenCategoryModal = () => {
+        setOpenCategoryModal(true);
+    };
+
+    const handleNewCategoryNameChange = (e) => {
+        setNewCategoryName(e.target.value);
+    };
+
+    const handleNewCategoryAmountChange = (e) => {
+        setNewCategoryAmount(e.target.value);
     };
 
     const handleOpenEditModal = (account) => {
@@ -80,6 +105,26 @@ function Budgets() {
         }
     };
 
+    const handleCreateCategory = async () => {
+        try {
+            const response = await axiosInstance.post("/category", {
+                budgetYear: budgetYear,
+                budgetMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                categoryName: newCategoryName,
+                budgetAmount: Number(newCategoryAmount),
+                categoryType: "Expense",
+            });
+            console.log("POST request successful: ", response.data);
+            getBudget(budgetYear);
+            handleCloseCategoryModal();
+        } catch (error) {
+            console.error("Error: ", error);
+            const message = error.response.data.message + " Please try again.";
+            setMessage(message);
+            setOpen(true);
+        }
+    };
+
     const handleCloseEditModal = () => {
         setEditOpen(false);
     };
@@ -88,10 +133,19 @@ function Budgets() {
         setOpen(false);
     };
 
+    const handleMonthChange = (event, newValue) => {
+        setSelectedMonth(newValue);
+    };
+
     const getBudget = async (selectedYear) => {
         try {
             const response = await axiosInstance.get("/budget", { params: { budgetYear: selectedYear } });
             console.log(response);
+            const budgetObject = response.data.budgetObject;
+            if (budgetObject) {
+                setAllMonthsBudgetData(budgetObject.budgets);
+                console.dir(allMonthsBudgetData);
+            }
         } catch (error) {
             console.error("Error getting budget associated with a year: ", error);
         }
@@ -141,43 +195,38 @@ function Budgets() {
                 </Button>
             </Box>
 
-            {accountsData.length > 0 ? (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
-                                <TableCell style={{ fontWeight: "bold" }}>Bank</TableCell>
-                                <TableCell style={{ fontWeight: "bold" }}>Type</TableCell>
-                                <TableCell style={{ fontWeight: "bold" }}>Edit</TableCell>
-                                <TableCell style={{ fontWeight: "bold" }}>Delete</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {accountsData.map((account) => (
-                                <TableRow key={account.accountid}>
-                                    <TableCell>{account.nickname}</TableCell>
-                                    <TableCell>{account.bank}</TableCell>
-                                    <TableCell>{mapTypeToString(account.accounttype)}</TableCell>
-                                    <TableCell>
-                                        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(account)}>
-                                            Edit
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button variant="contained" style={{ backgroundColor: "red", color: "white" }} onClick={() => handleDelete(account.accountid)}>
-                                            Delete
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            ) : (
-                <Typography>No Accounts Found</Typography>
-            )}
-            
+            {allMonthsBudgetData && budgetYear != "None" ? (
+                <>
+                    <Box sx={{ bgcolor: "background.paper" }} marginBottom={2} component={Paper}>
+                        <Tabs
+                            value={selectedMonth}
+                            onChange={handleMonthChange}
+                            variant="scrollable"
+                            scrollButtons
+                            allowScrollButtonsMobile
+                            aria-label="scrollable force tabs example"
+                        >
+                            <Tab value={0} label="January" />
+                            <Tab value={1} label="February" />
+                            <Tab value={2} label="March" />
+                            <Tab value={3} label="April" />
+                            <Tab value={4} label="May" />
+                            <Tab value={5} label="June" />
+                            <Tab value={6} label="July" />
+                            <Tab value={7} label="August" />
+                            <Tab value={8} label="September" />
+                            <Tab value={9} label="October" />
+                            <Tab value={10} label="November" />
+                            <Tab value={11} label="December" />
+                        </Tabs>
+                    </Box>
+                    <BudgetTable rows={allMonthsBudgetData[selectedMonth]} />
+                    <Button variant="contained" onClick={handleOpenCategoryModal} sx={{ bgcolor: "green", color: "white", marginTop: 2 }}>
+                        Add New Category to Budget
+                    </Button>
+                </>
+            ) : null}
+
             <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
                 <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
                     {message}
@@ -201,6 +250,37 @@ function Budgets() {
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button variant="contained" onClick={handleCreateBudget} sx={{ bgcolor: "green", color: "white" }}>
                             Add New Budget
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
+            <Modal open={openCategoryModal} onClose={handleCloseCategoryModal}>
+                <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", bgcolor: "background.paper", p: 4, width: "35%" }}>
+                    <Typography variant="h6" gutterBottom>
+                        Add A New Category:
+                    </Typography>
+                    <TextField required label="Category Name" fullWidth value={newCategoryName} onChange={handleNewCategoryNameChange} sx={{ mb: 2 }} />
+
+                    <FormControl fullWidth sx={{ m: 1 }}>
+                        <InputLabel>Category Amount</InputLabel>
+                        <OutlinedInput
+                            fullWidth
+                            value={newCategoryAmount}
+                            onChange={handleNewCategoryAmountChange}
+                            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                            required
+                            label="Category Amount"
+                        />
+                    </FormControl>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Button
+                            disabled={!(newCategoryName && newCategoryAmount)}
+                            variant="contained"
+                            onClick={handleCreateCategory}
+                            sx={{ bgcolor: "green", color: "white" }}
+                        >
+                            Add New Category
                         </Button>
                     </Box>
                 </Box>
