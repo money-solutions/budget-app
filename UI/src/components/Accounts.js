@@ -1,5 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
+import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -17,6 +18,7 @@ import { InputLabel, FormHelperText, FormControl } from "@mui/material";
 import axiosInstance from "@/config/axiosConfig";
 import { Router } from "next/router";
 import axios from "axios";
+import Paper from "@mui/material/Paper";
 
 function Accounts() {
     const [accountsData, setAccountsData] = React.useState([]);
@@ -122,23 +124,23 @@ function Accounts() {
 
     return (
         <Box sx={{ width: "100%" }}>
-            <Box display="flex" gap={45} marginBottom={3}>
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 45, marginBottom: 3 }}>
                 <Typography variant="h5">My Accounts:</Typography>
-                <Button variant="contained" onClick={handleOpenModal} sx={{ bgcolor: "green", color: "white" }}>
+                <Button variant="contained" onClick={handleOpenModal} sx={{ bgcolor: "green", color: "white", marginLeft: "auto" }}>
                     Add Account
                 </Button>
             </Box>
 
             {accountsData.length > 0 ? (
-                <TableContainer>
+                <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Bank</TableCell>
-                                <TableCell>Type</TableCell>
-                                <TableCell>Edit</TableCell>
-                                <TableCell>Delete</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Name</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Bank</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Type</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Edit</TableCell>
+                                <TableCell style={{ fontWeight: "bold" }}>Delete</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -148,10 +150,14 @@ function Accounts() {
                                     <TableCell>{account.bank}</TableCell>
                                     <TableCell>{mapTypeToString(account.accounttype)}</TableCell>
                                     <TableCell>
-                                        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(account)}>Edit</Button>
+                                        <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(account)}>
+                                            Edit
+                                        </Button>
                                     </TableCell>
                                     <TableCell>
-                                        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={() => handleDelete(account.accountid)}>Delete</Button>
+                                        <Button variant="contained" style={{ backgroundColor: "red", color: "white" }} onClick={() => handleDelete(account.accountid)}>
+                                            Delete
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}

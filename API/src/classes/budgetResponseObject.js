@@ -8,7 +8,10 @@ function constructBudgets(budgets, categories, transactionsWithCategories) {
         return {
             budgetYear: budgetYear,
             budgetMonth: budgetMonth,
-            categories: budgetCategories,
+            categories: budgetCategories.map((category) => {
+                category.transactions = transactions.filter((transaction) => transaction.categoryid === category.categoryid);
+                return category;
+            }),
             transactions: transactions,
         };
     });

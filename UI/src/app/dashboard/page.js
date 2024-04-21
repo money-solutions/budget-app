@@ -21,26 +21,21 @@ export default function Home() {
     };
 
     return (
-        <Grid>
-            <Grid container>
-                <Grid item xs={11}>
-                    <Typography variant="h4" gutterBottom>
-                        Welcome To Your Budget Dashboard!
-                    </Typography>
-                </Grid>
-                <Grid item xs={1}>
-                    <Button
-                        variant="outlined"
-                        className={styles.blackButton}
-                        onClick={handleLogout}
-                    >
-                        Logout
-                    </Button>
-                </Grid>
+        <Grid container spacing={2}>
+            <Grid item xs={11}>
+                <Typography variant="h4" gutterBottom>
+                    Welcome To Your Budget Dashboard!
+                </Typography>
             </Grid>
-            <Grid item>
+            <Grid item xs={1}>
+                <Button variant="outlined" className={styles.blackButton} onClick={handleLogout}>
+                    Logout
+                </Button>
+            </Grid>
+            <Grid item xs={12}>
                 <BasicTabs></BasicTabs>
             </Grid>
         </Grid>
     );
+
 }

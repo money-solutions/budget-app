@@ -21,8 +21,15 @@ async function getCategories(budgetIDs) {
     return rows;
 }
 
+async function getCategoriesByUser(userID) {
+    const query = "Select CategoryID, CategoryName, BudgetYear, BudgetMonth from Categories NATURAL JOIN Budgets WHERE UserID = $1";
+    const { rows } = await queryDB(query, [userID]);
+    return rows;
+}
+
 module.exports = {
     createCategory,
     isCategoryUnique,
     getCategories,
+    getCategoriesByUser,
 };
