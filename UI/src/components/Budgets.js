@@ -14,7 +14,7 @@ import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { InputLabel, FormHelperText, FormControl, OutlinedInput, InputAdornment } from "@mui/material";
+import { InputLabel, FormHelperText, FormControl, OutlinedInput, InputAdornment, FormControlLabel, Checkbox } from "@mui/material";
 import { Stack, Alert, Snackbar } from "@mui/material";
 import axiosInstance from "@/config/axiosConfig";
 import BudgetTable from "./BudgetTable";
@@ -24,16 +24,20 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
 function Budgets() {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+
     const [budgetYear, setBudgetYear] = React.useState("None");
     const [budgetYears, setBudgetYears] = React.useState([]);
     const [newBudgetYear, setNewBudgetYear] = React.useState("");
     const [allMonthsBudgetData, setAllMonthsBudgetData] = React.useState(null);
-    const [selectedMonth, setSelectedMonth] = React.useState(0);
+    const [selectedMonth, setSelectedMonth] = React.useState(currentMonth);
 
     const [open, setOpen] = React.useState(false);
     const [openCategoryModal, setOpenCategoryModal] = React.useState(false);
     const [newCategoryName, setNewCategoryName] = React.useState(null);
     const [newCategoryAmount, setNewCategoryAmount] = React.useState(null);
+    const [allMonths, setAllMonths] = React.useState(false);
 
     const [accountsData, setAccountsData] = React.useState([]);
     const [openModal, setOpenModal] = React.useState(false);
@@ -70,13 +74,8 @@ function Budgets() {
         setNewCategoryAmount(e.target.value);
     };
 
-    const handleOpenEditModal = (account) => {
-        setCurrentAccount(account);
-        setId(account.accountid);
-        setName(account.nickname);
-        setBank(account.bank);
-        setType(account.accounttype);
-        setEditOpen(true);
+    const handleAllMonthsChange = () => {
+        setAllMonths(!allMonths);
     };
 
     const handleBudgetYearChange = (e) => {
@@ -109,7 +108,7 @@ function Budgets() {
         try {
             const response = await axiosInstance.post("/category", {
                 budgetYear: budgetYear,
-                budgetMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                budgetMonths: allMonths ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : [selectedMonth + 1],
                 categoryName: newCategoryName,
                 budgetAmount: Number(newCategoryAmount),
                 categoryType: "Expense",
@@ -117,16 +116,15 @@ function Budgets() {
             console.log("POST request successful: ", response.data);
             getBudget(budgetYear);
             handleCloseCategoryModal();
+            setNewCategoryName(null);
+            setNewCategoryAmount(null);
+            setAllMonths(false);
         } catch (error) {
             console.error("Error: ", error);
             const message = error.response.data.message + " Please try again.";
             setMessage(message);
             setOpen(true);
         }
-    };
-
-    const handleCloseEditModal = () => {
-        setEditOpen(false);
     };
 
     const handleClose = () => {
@@ -262,7 +260,7 @@ function Budgets() {
                     </Typography>
                     <TextField required label="Category Name" fullWidth value={newCategoryName} onChange={handleNewCategoryNameChange} sx={{ mb: 2 }} />
 
-                    <FormControl fullWidth sx={{ m: 1 }}>
+                    <FormControl fullWidth>
                         <InputLabel>Category Amount</InputLabel>
                         <OutlinedInput
                             fullWidth
@@ -273,7 +271,14 @@ function Budgets() {
                             label="Category Amount"
                         />
                     </FormControl>
-                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                    <FormControlLabel
+                        sx={{ display: "flex", justifyContent: "center" }}
+                        fullWidth
+                        control={<Checkbox />}
+                        label="Apply to Entire Year"
+                        onChange={handleAllMonthsChange}
+                    />
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <Button
                             disabled={!(newCategoryName && newCategoryAmount)}
                             variant="contained"
@@ -285,28 +290,6 @@ function Budgets() {
                     </Box>
                 </Box>
             </Modal>
-
-            {/* <Modal open={editOpen} onClose={handleCloseEditModal}>
-                <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", bgcolor: "background.paper", p: 4, width: "35%" }}>
-                    <Typography variant="h6" gutterBottom>
-                        Edit Account:
-                    </Typography>
-                    <TextField required label="Name" fullWidth value={name} onChange={handleNameChange} sx={{ mb: 2 }} />
-                    <TextField label="Bank" fullWidth value={bank} onChange={handleBankChange} sx={{ mb: 2 }} />
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="editTypeID">Type of Account</InputLabel>
-                        <Select label="Type of Account" labelId="editTypeID" value={type} fullWidth onChange={handleTypeChange}>
-                            <MenuItem value={1}>Checkings</MenuItem>
-                            <MenuItem value={2}>Savings</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Button variant="contained" onClick={handleEditAccount} sx={{ bgcolor: "blue", color: "white" }}>
-                            Save Changes
-                        </Button>
-                    </Box>
-                </Box>
-            </Modal> */}
         </Box>
     );
 }

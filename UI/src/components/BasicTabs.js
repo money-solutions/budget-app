@@ -51,23 +51,30 @@ export default function BasicTabs() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Budgets" {...a11yProps(0)} />
-          <Tab label="Transactions" {...a11yProps(1)} />
-          <Tab label="Accounts" {...a11yProps(2)} />
-        </Tabs>
+      <Box sx={{ width: "100%" }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                  <Tab label="Budgets" {...a11yProps(0)} />
+                  <Tab label="Transactions" {...a11yProps(1)} />
+                  <Tab label="Accounts" {...a11yProps(2)} />
+              </Tabs>
+          </Box>
+          {value === 0 && (
+              <Box sx={{ p: 3 }}>
+                  <Budgets />
+              </Box>
+          )}
+          {value === 1 && (
+              <Box sx={{ p: 3 }}>
+                  <Transactions />
+              </Box>
+          )}
+          {value === 2 && (
+              <Box sx={{ p: 3 }}>
+                  <Accounts />
+              </Box>
+          )}
       </Box>
-      <CustomTabPanel value={value} index={0}>
-        <Budgets />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        <Transactions />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        <Accounts />
-      </CustomTabPanel>
-    </Box>
   );
+
 }

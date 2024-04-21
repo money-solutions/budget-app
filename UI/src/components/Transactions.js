@@ -33,6 +33,9 @@ function Transactions() {
     const [transactionDate, setTransactionDate] = React.useState(new Date());
     const [message, setMessage] = React.useState("");
 
+    const [allCategoriesMap, setAllCategoriesMap] = React.useState(null);
+    const [categorySelected, setCategorySelected] = React.useState(null);
+
     const handleOpenModal = () => {
         getAccounts();
         setOpen(true);
@@ -106,9 +109,44 @@ function Transactions() {
         }
     };
 
+    const getCategories = async () => {
+        try {
+            const response = await axiosInstance.get("/category");
+            const categories = response.data.categories;
+            const categoriesMap = {};
+            categories.forEach((category) => {
+                const key = `${String(category.budgetyear)}-${String(category.budgetmonth)}`;
+                const value = { categoryname: category.categoryname, categoryid: category.categoryid };
+
+                if (categoriesMap[key]) {
+                    categoriesMap[key].push(value);
+                } else {
+                    categoriesMap[key] = [value];
+                }
+            });
+            setAllCategoriesMap(categoriesMap);
+        } catch (error) {
+            console.error("Error getting categories associated with user: ", error);
+        }
+    };
+
     React.useEffect(() => {
         getTransactions();
+        getCategories();
     }, []);
+
+    const [, forceUpdate] = React.useState();
+
+    const forceReRender = () => {
+        forceUpdate((s) => !s); // Toggle state to force re-render
+    };
+
+    React.useEffect(() => {
+        if (allCategoriesMap) {
+            forceReRender(); // Force re-render when allCategoriesMap is updated
+            console.log(allCategoriesMap);
+        }
+    }, [allCategoriesMap]);
 
     const handleAddTransaction = async () => {
         try {
@@ -148,6 +186,23 @@ function Transactions() {
         }
     };
 
+    const handleCategorySelectedChange = async (transactionid, e) => {
+        const categoryid = e.target.value != "None" ? e.target.value : null;
+        console.log(categoryid)
+
+        
+        try {
+            const response = await axiosInstance.put("/transaction/category", { transactionid, categoryid });
+            console.log("PUT request successful: ", response.data);
+            await getTransactions();
+        } catch (error) {
+            console.error("Error: ", error);
+            const message = " Please try again.";
+            setMessage(message);
+            setEditOpen(true);
+        }
+    };
+
     return (
         <Box sx={{ width: "100%" }}>
             <Box sx={{ display: "flex", flexDirection: "row", gap: 45, marginBottom: 3 }}>
@@ -157,7 +212,7 @@ function Transactions() {
                 </Button>
             </Box>
 
-            {transactionsData.length > 0 ? (
+            {transactionsData.length > 0 && allCategoriesMap ? (
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -181,7 +236,32 @@ function Transactions() {
                                     <TableCell>
                                         {new Date(transaction.datetransacted).toLocaleDateString(undefined, { year: "numeric", month: "numeric", day: "numeric" })}
                                     </TableCell>
-                                    <TableCell>{transaction.categoryid}</TableCell>
+                                    <TableCell align="left">
+                                        <FormControl variant="standard" sx={{ minWidth: 125 }}>
+                                            <Select
+                                                labelId="demo-simple-select-standard-label"
+                                                id="demo-simple-select-standard"
+                                                value={transaction.categoryid || "None"}
+                                                onChange={(e) => handleCategorySelectedChange(transaction.transactionid, e)}
+                                            >
+                                                <MenuItem value="None">
+                                                    <em>None</em>
+                                                </MenuItem>
+                                                {allCategoriesMap
+                                                    ? allCategoriesMap[
+                                                          new Date(transaction.datetransacted)
+                                                              .toISOString()
+                                                              .substring(0, 7)
+                                                              .replace(/-0(\d)/, "-$1")
+                                                      ]?.map((category) => (
+                                                          <MenuItem key={category.categoryid} value={category.categoryid}>
+                                                              {category.categoryname}
+                                                          </MenuItem>
+                                                      ))
+                                                    : null}
+                                            </Select>
+                                        </FormControl>
+                                    </TableCell>
                                     <TableCell>{transaction.nickname}</TableCell>
                                     <TableCell>
                                         <Button variant="contained" color="primary" onClick={() => handleOpenEditModal(transaction)}>

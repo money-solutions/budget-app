@@ -1,4 +1,4 @@
-const { createCategory, isCategoryUnique } = require("../services/categoryService");
+const { createCategory, isCategoryUnique, getCategoriesByUser } = require("../services/categoryService");
 const { getBudgetID } = require("../services/budgetService");
 const sendResponse200 = require("../utils/sendResponse200");
 
@@ -36,4 +36,21 @@ const categoryCreate = async (req, res) => {
     }
 };
 
-module.exports = { categoryCreate };
+const categoryGet = async (req, res) => {
+    try {
+        const userID = req.session.user;
+
+        const categories = await getCategoriesByUser(userID);
+
+        if (categories) {
+            console.log("Categories Retrieved Successfully!");
+            return res.status(200).json({ message: "Retrieved Categories Successfully!", categories });
+        } else {
+            return res.status(204).json({ message: "No Categories Found!" });
+        }
+    } catch (error) {
+        console.error("Error retrieving categories:", error);
+        return res.status(500).json({ message: "Not Found" });
+    }
+};
+module.exports = { categoryCreate, categoryGet };

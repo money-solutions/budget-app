@@ -43,21 +43,21 @@ function Row(props) {
                             <Table size="small" aria-label="purchases">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Date</TableCell>
-                                        <TableCell>Account</TableCell>
-                                        <TableCell>Description</TableCell>
-                                        <TableCell>Amount</TableCell>
+                                        <TableCell style={{ fontWeight: "bold" }}>Date</TableCell>
+                                        <TableCell style={{ fontWeight: "bold" }}>Account</TableCell>
+                                        <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+                                        <TableCell style={{ fontWeight: "bold" }}>Amount</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {row.transactions.map((transactionRow) => (
                                         <TableRow key={transactionRow.transactionid}>
                                             <TableCell component="th" scope="row">
-                                                {transactionRow.datetransacted}
+                                                {new Date(transactionRow.datetransacted).toLocaleDateString(undefined, { year: "numeric", month: "numeric", day: "numeric" })}
                                             </TableCell>
                                             <TableCell>{transactionRow.nickname}</TableCell>
-                                            <TableCell align="right">{transactionRow.description}</TableCell>
-                                            <TableCell align="right">{transactionRow.amount}</TableCell>
+                                            <TableCell>{transactionRow.description}</TableCell>
+                                            <TableCell>$ {Number(transactionRow.amount).toFixed(2)}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -71,21 +71,6 @@ function Row(props) {
 }
 
 Row.propTypes = {
-    // row: PropTypes.shape({
-    //     calories: PropTypes.number.isRequired,
-    //     carbs: PropTypes.number.isRequired,
-    //     fat: PropTypes.number.isRequired,
-    //     history: PropTypes.arrayOf(
-    //         PropTypes.shape({
-    //             amount: PropTypes.number.isRequired,
-    //             customerId: PropTypes.string.isRequired,
-    //             date: PropTypes.string.isRequired,
-    //         })
-    //     ).isRequired,
-    //     name: PropTypes.string.isRequired,
-    //     price: PropTypes.number.isRequired,
-    //     protein: PropTypes.number.isRequired,
-    // }).isRequired,
     row: PropTypes.shape({
         actualamount: PropTypes.string.isRequired,
         budgetamount: PropTypes.string.isRequired,
