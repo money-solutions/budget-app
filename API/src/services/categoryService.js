@@ -27,9 +27,23 @@ async function getCategoriesByUser(userID) {
     return rows;
 }
 
+async function editCategory(categoryID, categoryName, categoryAmount) {
+    const query = "UPDATE Categories SET CategoryName = $2, BudgetAmount = $3 WHERE categoryID = $1";
+    const { rowCount } = await queryDB(query, [categoryID, categoryName, categoryAmount]);
+    return rowCount === 1;
+}
+
+async function deleteCategory(categoryID) {
+    const query = "DELETE FROM Categories WHERE CategoryID = $1";
+    const { rowCount } = await queryDB(query, [categoryID]);
+    return rowCount === 1;
+}
+
 module.exports = {
     createCategory,
     isCategoryUnique,
     getCategories,
     getCategoriesByUser,
+    editCategory,
+    deleteCategory,
 };

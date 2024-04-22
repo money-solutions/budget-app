@@ -27,7 +27,7 @@ function Budgets() {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
 
-    const [budgetYear, setBudgetYear] = React.useState("None");
+    const [selectedBudgetYear, setSelectedBudgetYear] = React.useState("None");
     const [budgetYears, setBudgetYears] = React.useState([]);
     const [newBudgetYear, setNewBudgetYear] = React.useState("");
     const [allMonthsBudgetData, setAllMonthsBudgetData] = React.useState(null);
@@ -80,7 +80,7 @@ function Budgets() {
 
     const handleBudgetYearChange = (e) => {
         const selectedYear = e.target.value;
-        setBudgetYear(selectedYear);
+        setSelectedBudgetYear(selectedYear);
         if (selectedYear != "None") {
             getBudget(selectedYear);
         }
@@ -107,14 +107,14 @@ function Budgets() {
     const handleCreateCategory = async () => {
         try {
             const response = await axiosInstance.post("/category", {
-                budgetYear: budgetYear,
+                budgetYear: selectedBudgetYear,
                 budgetMonths: allMonths ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : [selectedMonth + 1],
                 categoryName: newCategoryName,
                 budgetAmount: Number(newCategoryAmount),
                 categoryType: "Expense",
             });
             console.log("POST request successful: ", response.data);
-            getBudget(budgetYear);
+            getBudget(selectedBudgetYear);
             handleCloseCategoryModal();
             setNewCategoryName(null);
             setNewCategoryAmount(null);
@@ -171,7 +171,7 @@ function Budgets() {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={budgetYear}
+                        value={selectedBudgetYear}
                         disabled={budgetYears.length === 0 ? true : false}
                         onChange={handleBudgetYearChange}
                     >
@@ -193,7 +193,7 @@ function Budgets() {
                 </Button>
             </Box>
 
-            {allMonthsBudgetData && budgetYear != "None" ? (
+            {allMonthsBudgetData && selectedBudgetYear != "None" ? (
                 <>
                     <Box sx={{ bgcolor: "background.paper" }} marginBottom={2} component={Paper}>
                         <Tabs
@@ -218,7 +218,15 @@ function Budgets() {
                             <Tab value={11} label="December" />
                         </Tabs>
                     </Box>
-                    <BudgetTable rows={allMonthsBudgetData[selectedMonth]} />
+                    <BudgetTable
+                        rows={allMonthsBudgetData[selectedMonth].categories}
+                        message={message}
+                        setMessage={setMessage}
+                        openError={open}
+                        setOpenError={setOpen}
+                        getBudget={getBudget}
+                        selectedBudgetYear={selectedBudgetYear}
+                    />
                     <Button variant="contained" onClick={handleOpenCategoryModal} sx={{ bgcolor: "green", color: "white", marginTop: 2 }}>
                         Add New Category to Budget
                     </Button>
