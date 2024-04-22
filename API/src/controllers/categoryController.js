@@ -43,8 +43,20 @@ const categoryGet = async (req, res) => {
         const categories = await getCategoriesByUser(userID);
 
         if (categories) {
+            const categoriesMap = {};
+            categories.forEach((category) => {
+                const budgetMonth = category.budgetmonth < 10 ? `0${category.budgetmonth}` : String(category.budgetmonth);
+                const key = `${String(category.budgetyear)}-${budgetMonth}`;
+                const value = { categoryname: category.categoryname, categoryid: category.categoryid };
+
+                if (categoriesMap[key]) {
+                    categoriesMap[key].push(value);
+                } else {
+                    categoriesMap[key] = [value];
+                }
+            });
             console.log("Categories Retrieved Successfully!");
-            return res.status(200).json({ message: "Retrieved Categories Successfully!", categories });
+            return res.status(200).json({ message: "Retrieved Categories Successfully!", categoriesMap });
         } else {
             return res.status(204).json({ message: "No Categories Found!" });
         }

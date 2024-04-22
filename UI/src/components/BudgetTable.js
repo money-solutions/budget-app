@@ -96,7 +96,9 @@ function Row(props) {
                 </TableCell>
                 <TableCell>$ {Number(row.budgetamount).toFixed(2)}</TableCell>
                 <TableCell>$ {row.actualamount ? Number(row.actualamount).toFixed(2) : (0).toFixed(2)}</TableCell>
-                <TableCell>$ {(Number(row.budgetamount) - Number(row.actualamount)).toFixed(2)}</TableCell>
+                <TableCell sx={(Number(row.budgetamount) - Number(row.actualamount)).toFixed(2) > 0 ? { color: "green" } : { color: "red" }}>
+                    $ {(Number(row.budgetamount) - Number(row.actualamount)).toFixed(2)}
+                </TableCell>
                 <TableCell>
                     <Button variant="contained" color="primary" onClick={() => handleOpenEditCategoryModal(row)}>
                         Edit
