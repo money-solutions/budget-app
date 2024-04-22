@@ -20,12 +20,12 @@ import { InputLabel, FormHelperText, FormControl, OutlinedInput, InputAdornment,
 import axiosInstance from "@/config/axiosConfig";
 
 function Row(props) {
-    const { row, message, setMessage, openError, setOpenError } = props;
+    const { row, message, setMessage, openError, setOpenError, getBudget, selectedBudgetYear } = props;
 
     const [open, setOpen] = React.useState(false);
 
     const [editCategoryModal, setEditCategoryModal] = React.useState(false);
-    const[editCategoryName, setEditCategoryName] = React.useState("");
+    const [editCategoryName, setEditCategoryName] = React.useState("");
     const [editCategoryAmount, setEditCategoryAmount] = React.useState("");
     const [editCategoryFieldChanged, setEditCategoryFieldChanged] = React.useState(false);
     const [editCategoryID, setEditCategoryID] = React.useState(null);
@@ -48,6 +48,7 @@ function Row(props) {
     const handleDeleteCategory = async (categoryid) => {
         try {
             const response = await axiosInstance.delete("/category", { data: { categoryid } });
+            await getBudget(selectedBudgetYear);
             console.log("Category deleted successfully");
         } catch (error) {
             console.error("Error deleting Category: ", error);
@@ -72,6 +73,7 @@ function Row(props) {
             const response = await axiosInstance.put("/category", { categoryid: editCategoryID, categoryname: editCategoryName, amount: editCategoryAmount });
             console.log("PUT request successful: ", response.data);
             // await getTransactions();
+            await getBudget(selectedBudgetYear);
             handleCloseEditCategoryModal();
         } catch (error) {
             console.error("Error: ", error);
@@ -158,14 +160,9 @@ function Row(props) {
                             label="Category Amount"
                         />
                     </FormControl>
-                    
-                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2}}>
-                        <Button
-                            disabled={!(editCategoryFieldChanged)}
-                            variant="contained"
-                            onClick={handleEditCategory}
-                            sx={{ bgcolor: "green", color: "white" }}
-                        >
+
+                    <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+                        <Button disabled={!editCategoryFieldChanged} variant="contained" onClick={handleEditCategory} sx={{ bgcolor: "green", color: "white" }}>
                             Update Category
                         </Button>
                     </Box>
@@ -199,7 +196,7 @@ Row.propTypes = {
 };
 
 export default function BudgetTable(props) {
-    const {rows, message, setMessage, openError, setOpenError} = props;
+    const { rows, message, setMessage, openError, setOpenError, getBudget, selectedBudgetYear } = props;
 
     return (
         <TableContainer component={Paper}>
@@ -217,7 +214,16 @@ export default function BudgetTable(props) {
                 </TableHead>
                 <TableBody>
                     {rows.map((row) => (
-                        <Row key={row.categoryname} row={row} message={message} setMessage={setMessage} setOpenError={setOpenError} openError={openError}/>
+                        <Row
+                            key={row.categoryname}
+                            row={row}
+                            message={message}
+                            setMessage={setMessage}
+                            setOpenError={setOpenError}
+                            openError={openError}
+                            getBudget={getBudget}
+                            selectedBudgetYear={selectedBudgetYear}
+                        />
                     ))}
                 </TableBody>
             </Table>
