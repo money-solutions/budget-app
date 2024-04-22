@@ -36,6 +36,12 @@ async function getBudgetYears(userID) {
     return rows;
 }
 
+async function deleteBudget(userID, budgetYear) {
+    const query = "DELETE FROM Budgets WHERE UserID = $1 AND BudgetYear = $2";
+    const { rowCount } = await queryDB(query, [userID, budgetYear]);
+    return rowCount === 12;
+}
+
 module.exports = {
     createBudget,
     isBudgetUnique,
@@ -43,4 +49,5 @@ module.exports = {
     doesBudgetYearExist,
     getBudgets,
     getBudgetYears,
+    deleteBudget,
 };
