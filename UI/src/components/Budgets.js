@@ -218,7 +218,7 @@ function Budgets() {
                             <Tab value={11} label="December" />
                         </Tabs>
                     </Box>
-                    <BudgetTable rows={allMonthsBudgetData[selectedMonth]} />
+                    <BudgetTable rows={allMonthsBudgetData[selectedMonth].categories} message={message} setMessage={setMessage} openError={open} setOpenError={setOpen}/>
                     <Button variant="contained" onClick={handleOpenCategoryModal} sx={{ bgcolor: "green", color: "white", marginTop: 2 }}>
                         Add New Category to Budget
                     </Button>
