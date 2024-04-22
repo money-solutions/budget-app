@@ -1,4 +1,4 @@
-const { createBudget, isBudgetUnique, doesBudgetYearExist, getBudgets, getBudgetYears } = require("../services/budgetService");
+const { createBudget, isBudgetUnique, doesBudgetYearExist, getBudgets, getBudgetYears, deleteBudget } = require("../services/budgetService");
 const { getCategories } = require("../services/categoryService");
 const { getTransactionsByCategoryIDs, getTransactionsByYear } = require("../services/transactionService");
 const { BudgetResponseObject } = require("../classes/budgetResponseObject");
@@ -91,4 +91,26 @@ const budgetYearsGet = async (req, res) => {
         res.status(500).json({ message: "An error occurred." });
     }
 };
-module.exports = { budgetCreate, budgetGet, budgetYearsGet };
+
+const budgetDelete = async (req, res) => {
+    try {
+        const userID = req.session.user;
+        const budgetYear = req.body.budgetYear;
+
+        if (!budgetYear) {
+            return res.status(400).json({ message: "Missing parameters" });
+        }
+
+        console.log(`Deleting Budget: '${budgetYear}' for User: '${userID}'`);
+        const isBudgetDeleted = await deleteBudget(userID, budgetYear);
+        if (!isBudgetDeleted) {
+            return res.status(500).json({ message: "Database Server Error." });
+        }
+        const message = "Budget Deleted Successfully!";
+        return res.status(200).json({ message: message });
+    } catch (error) {
+        console.error("Error deleting budget:", error);
+        return res.status(500).json({ message: message });
+    }
+};
+module.exports = { budgetCreate, budgetGet, budgetYearsGet, budgetDelete };

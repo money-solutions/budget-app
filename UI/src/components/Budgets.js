@@ -38,13 +38,7 @@ function Budgets() {
     const [newCategoryName, setNewCategoryName] = React.useState(null);
     const [newCategoryAmount, setNewCategoryAmount] = React.useState(null);
     const [allMonths, setAllMonths] = React.useState(false);
-
-    const [accountsData, setAccountsData] = React.useState([]);
     const [openModal, setOpenModal] = React.useState(false);
-    const [editOpen, setEditOpen] = React.useState(false);
-    const [name, setName] = React.useState("");
-    const [bank, setBank] = React.useState("");
-    const [type, setType] = React.useState("");
     const [message, setMessage] = React.useState("");
 
     const currentYear = new Date().getFullYear();
@@ -133,6 +127,20 @@ function Budgets() {
 
     const handleMonthChange = (event, newValue) => {
         setSelectedMonth(newValue);
+    };
+
+    const handleDeleteBudget = async () => {
+        try {
+            const response = await axiosInstance.delete("/budget", { data: { budgetYear: selectedBudgetYear } });
+            console.log("DELETE request successful: ", response.data);
+            await getBudgetYears();
+            setSelectedBudgetYear("None");
+        } catch (error) {
+            console.error("Error: ", error);
+            const message = error?.response?.data?.message + " Please try again.";
+            setMessage(message);
+            setOpen(true);
+        }
     };
 
     const getBudget = async (selectedYear) => {
@@ -227,9 +235,17 @@ function Budgets() {
                         getBudget={getBudget}
                         selectedBudgetYear={selectedBudgetYear}
                     />
-                    <Button variant="contained" onClick={handleOpenCategoryModal} sx={{ bgcolor: "green", color: "white", marginTop: 2 }}>
-                        Add New Category to Budget
-                    </Button>
+
+                    <Box textAlign="center">
+                        <Button variant="contained" onClick={handleOpenCategoryModal} sx={{ bgcolor: "green", color: "white", marginTop: 2 }}>
+                            Add New Category to Budget
+                        </Button>
+                    </Box>
+                    <Box textAlign="center">
+                        <Button variant="contained" onClick={handleDeleteBudget} sx={{ bgcolor: "red", color: "white", marginTop: 2 }}>
+                            Delete Your {selectedBudgetYear} Budget
+                        </Button>
+                    </Box>
                 </>
             ) : null}
 
