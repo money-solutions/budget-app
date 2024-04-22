@@ -32,9 +32,7 @@ function Transactions() {
     const [type, setType] = React.useState("");
     const [transactionDate, setTransactionDate] = React.useState(new Date());
     const [message, setMessage] = React.useState("");
-
     const [allCategoriesMap, setAllCategoriesMap] = React.useState(null);
-    const [categorySelected, setCategorySelected] = React.useState(null);
 
     const handleOpenModal = () => {
         getAccounts();
@@ -112,18 +110,8 @@ function Transactions() {
     const getCategories = async () => {
         try {
             const response = await axiosInstance.get("/category");
-            const categories = response.data.categories;
-            const categoriesMap = {};
-            categories.forEach((category) => {
-                const key = `${String(category.budgetyear)}-${String(category.budgetmonth)}`;
-                const value = { categoryname: category.categoryname, categoryid: category.categoryid };
-
-                if (categoriesMap[key]) {
-                    categoriesMap[key].push(value);
-                } else {
-                    categoriesMap[key] = [value];
-                }
-            });
+            console.log(response);
+            const categoriesMap = response.data.categoriesMap;
             setAllCategoriesMap(categoriesMap);
         } catch (error) {
             console.error("Error getting categories associated with user: ", error);
@@ -188,9 +176,8 @@ function Transactions() {
 
     const handleCategorySelectedChange = async (transactionid, e) => {
         const categoryid = e.target.value != "None" ? e.target.value : null;
-        console.log(categoryid)
+        console.log(categoryid);
 
-        
         try {
             const response = await axiosInstance.put("/transaction/category", { transactionid, categoryid });
             console.log("PUT request successful: ", response.data);
@@ -248,12 +235,7 @@ function Transactions() {
                                                     <em>None</em>
                                                 </MenuItem>
                                                 {allCategoriesMap
-                                                    ? allCategoriesMap[
-                                                          new Date(transaction.datetransacted)
-                                                              .toISOString()
-                                                              .substring(0, 7)
-                                                              .replace(/-0(\d)/, "-$1")
-                                                      ]?.map((category) => (
+                                                    ? allCategoriesMap[new Date(transaction.datetransacted).toISOString().substring(0, 7)]?.map((category) => (
                                                           <MenuItem key={category.categoryid} value={category.categoryid}>
                                                               {category.categoryname}
                                                           </MenuItem>
@@ -317,7 +299,6 @@ function Transactions() {
                             ))}
                         </Select>
                     </FormControl>
-                    <TextField required label="Category" fullWidth onChange={handleCategoryChange} sx={{ mb: 2 }} />
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button variant="contained" onClick={handleAddTransaction} sx={{ bgcolor: "green", color: "white" }}>
                             Add
