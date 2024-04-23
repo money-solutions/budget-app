@@ -124,3 +124,44 @@ CREATE TABLE CanView(
 	BudgetID INT REFERENCES Budgets(BudgetID) ON DELETE CASCADE
 );
 ```
+
+7. Create the "get_user_by_username" function:
+
+```sql
+CREATE OR REPLACE FUNCTION get_user_by_username(username_param character varying)
+RETURNS SETOF Users AS 
+$$
+BEGIN
+    RETURN QUERY SELECT * FROM Users WHERE username = username_param;
+END;
+$$ LANGUAGE plpgsql;
+
+```
+
+8. Create the "create_user" stored procedure:
+
+```sql
+CREATE OR REPLACE PROCEDURE public.create_user(
+	IN username_param character varying,
+	IN password_param character varying,
+	IN firstname_param character varying,
+	IN lastname_param character varying)
+LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    INSERT INTO Users (Username, Password, Firstname, Lastname, DateCreated) 
+    VALUES (username_param, password_param, firstname_param, lastname_param, CURRENT_DATE);
+END;
+$BODY$;
+ALTER PROCEDURE public.create_user(character varying, character varying, character varying, character varying)
+    OWNER TO postgres;
+```
+
+9. Create the "mail_list" view:
+
+```sql
+CREATE OR REPLACE VIEW email_list_view AS
+SELECT Email
+FROM Users
+WHERE Email IS NOT NULL;
+```

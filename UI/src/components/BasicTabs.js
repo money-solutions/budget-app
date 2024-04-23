@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Accounts from './Accounts';
 import Transactions from './Transactions';
 import Budgets from './Budgets';
+import UserInfo from './UserInfo';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,6 +58,7 @@ export default function BasicTabs() {
                   <Tab label="Budgets" {...a11yProps(0)} />
                   <Tab label="Transactions" {...a11yProps(1)} />
                   <Tab label="Accounts" {...a11yProps(2)} />
+                  <Tab label="My Profile" {...a11yProps(3)} />
               </Tabs>
           </Box>
           {value === 0 && (
@@ -72,6 +74,11 @@ export default function BasicTabs() {
           {value === 2 && (
               <Box sx={{ p: 3 }}>
                   <Accounts />
+              </Box>
+          )}
+          {value === 3 && (
+              <Box sx={{ p: 3 }}>
+                  <UserInfo />
               </Box>
           )}
       </Box>
