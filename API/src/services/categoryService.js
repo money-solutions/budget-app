@@ -22,7 +22,7 @@ async function getCategories(budgetIDs) {
 }
 
 async function getCategoriesByUser(userID) {
-    const query = "Select CategoryID, CategoryName, BudgetYear, BudgetMonth from Categories NATURAL JOIN Budgets WHERE UserID = $1";
+    const query = "Select CategoryID, CategoryName, CategoryType, BudgetYear, BudgetMonth from Categories NATURAL JOIN Budgets WHERE UserID = $1";
     const { rows } = await queryDB(query, [userID]);
     return rows;
 }

@@ -8,10 +8,18 @@ function constructBudgets(budgets, categories, transactionsWithCategories) {
         return {
             budgetYear: budgetYear,
             budgetMonth: budgetMonth,
-            categories: budgetCategories.map((category) => {
-                category.transactions = transactions.filter((transaction) => transaction.categoryid === category.categoryid);
-                return category;
-            }),
+            incomeCategories: budgetCategories
+                .filter((category) => category.categorytype === "Income")
+                .map((category) => {
+                    category.transactions = transactions.filter((transaction) => transaction.categoryid === category.categoryid);
+                    return category;
+                }),
+            expenseCategories: budgetCategories
+                .filter((category) => category.categorytype === "Expense")
+                .map((category) => {
+                    category.transactions = transactions.filter((transaction) => transaction.categoryid === category.categoryid);
+                    return category;
+                }),
             transactions: transactions,
         };
     });
@@ -26,7 +34,16 @@ budgets : [
     {
         budgetyear: 2020,
         budgetmonth: 1,
-        categories: [
+        incomecategories: [
+            {
+                categoryid: 1,
+                categoryname: "Food",
+                categorytype: "Income",
+                budgetamount: 1000
+                actualamount: 1000
+            },
+        ],
+        expensecategories: [
             {
                 categoryid: 1,
                 categoryname: "Food",

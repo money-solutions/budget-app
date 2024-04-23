@@ -218,7 +218,9 @@ function Transactions() {
                             {transactionsData.map((transaction) => (
                                 <TableRow key={transaction.transactionid}>
                                     <TableCell>{transaction.description}</TableCell>
-                                    <TableCell>{`$ ${transaction.amount}`}</TableCell>
+                                    <TableCell sx={Number(transaction.amount) < 0 ? { color: "red" } : { color: "green" }}>{`$ ${Math.abs(Number(transaction.amount)).toFixed(
+                                        2
+                                    )}`}</TableCell>
                                     <TableCell>{transaction.currency}</TableCell>
                                     <TableCell>
                                         {new Date(transaction.datetransacted).toLocaleDateString(undefined, { year: "numeric", month: "numeric", day: "numeric" })}

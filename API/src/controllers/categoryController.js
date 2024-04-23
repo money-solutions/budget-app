@@ -47,7 +47,7 @@ const categoryGet = async (req, res) => {
             categories.forEach((category) => {
                 const budgetMonth = category.budgetmonth < 10 ? `0${category.budgetmonth}` : String(category.budgetmonth);
                 const key = `${String(category.budgetyear)}-${budgetMonth}`;
-                const value = { categoryname: category.categoryname, categoryid: category.categoryid };
+                const value = { categoryname: category.categoryname, categoryid: category.categoryid, categorytype: category.categorytype };
 
                 if (categoriesMap[key]) {
                     categoriesMap[key].push(value);

@@ -28,13 +28,13 @@ function createRandomTransaction(accountID) {
         "Macys",
         "Culvers",
         "Five Guys Burgers",
-        "McDonals",
+        "McDonalds",
         "Burger King",
         "Florida Power and Light",
         "Netflix",
         "Store",
     ];
-    const amount = (Math.random() * (250 - 5) + 5).toFixed(2);
+    const amount = (-(Math.random() * (250 - 5) + 5).toFixed(2));
     const dateTransacted = getRandomDateInLastMonth();
     const currency = "USD";
     const description = `Purchase from ${stores[Math.floor(Math.random() * stores.length)]}`;
@@ -46,6 +46,7 @@ function generateRandomTransactions(accountID, numToGenerate) {
     for (let i = 0; i < numToGenerate; i++) {
         createRandomTransaction(accountID);
     }
+    createTransaction("Job Paycheck", 950.34, "USD", getRandomDateInLastMonth(), accountID, null);
 }
 
 module.exports = generateRandomTransactions;

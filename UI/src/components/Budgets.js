@@ -37,6 +37,7 @@ function Budgets() {
     const [openCategoryModal, setOpenCategoryModal] = React.useState(false);
     const [newCategoryName, setNewCategoryName] = React.useState(null);
     const [newCategoryAmount, setNewCategoryAmount] = React.useState(null);
+    const [newCategoryType, setNewCategoryType] = React.useState(null);
     const [allMonths, setAllMonths] = React.useState(false);
     const [openModal, setOpenModal] = React.useState(false);
     const [message, setMessage] = React.useState("");
@@ -104,8 +105,8 @@ function Budgets() {
                 budgetYear: selectedBudgetYear,
                 budgetMonths: allMonths ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : [selectedMonth + 1],
                 categoryName: newCategoryName,
-                budgetAmount: Number(newCategoryAmount),
-                categoryType: "Expense",
+                budgetAmount: newCategoryType === "Expense" ? -Number(newCategoryAmount): Number(newCategoryAmount),
+                categoryType: newCategoryType,
             });
             console.log("POST request successful: ", response.data);
             getBudget(selectedBudgetYear);
@@ -123,6 +124,10 @@ function Budgets() {
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleCategoryTypeChange = (e) => {
+        setNewCategoryType(e.target.value);
     };
 
     const handleMonthChange = (event, newValue) => {
@@ -226,16 +231,86 @@ function Budgets() {
                             <Tab value={11} label="December" />
                         </Tabs>
                     </Box>
-                    <BudgetTable
-                        rows={allMonthsBudgetData[selectedMonth].categories}
-                        message={message}
-                        setMessage={setMessage}
-                        openError={open}
-                        setOpenError={setOpen}
-                        getBudget={getBudget}
-                        selectedBudgetYear={selectedBudgetYear}
-                    />
-
+                    {allMonthsBudgetData[selectedMonth].expenseCategories.length > 0 ? (
+                        <>
+                            <Typography
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    mb: 1,
+                                    marginTop: 1,
+                                }}
+                                variant="h6"
+                            >
+                                Expense Categories Table
+                            </Typography>
+                            <BudgetTable
+                                rows={allMonthsBudgetData[selectedMonth].expenseCategories}
+                                message={message}
+                                setMessage={setMessage}
+                                openError={open}
+                                setOpenError={setOpen}
+                                getBudget={getBudget}
+                                selectedBudgetYear={selectedBudgetYear}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <Typography
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    mb: 1,
+                                    marginTop: 1,
+                                }}
+                                variant="h6"
+                            >
+                                No Expense Categories Created
+                            </Typography>
+                        </>
+                    )}
+                    {allMonthsBudgetData[selectedMonth].incomeCategories.length > 0 ? (
+                        <>
+                            <Typography
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    mb: 1,
+                                    marginTop: 3,
+                                }}
+                                variant="h6"
+                            >
+                                Income Categories Table
+                            </Typography>
+                            <BudgetTable
+                                rows={allMonthsBudgetData[selectedMonth].incomeCategories}
+                                message={message}
+                                setMessage={setMessage}
+                                openError={open}
+                                setOpenError={setOpen}
+                                getBudget={getBudget}
+                                selectedBudgetYear={selectedBudgetYear}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <Typography
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    mb: 1,
+                                    marginTop: 3,
+                                }}
+                                variant="h6"
+                            >
+                                No Income Categories Created
+                            </Typography>
+                        </>
+                    )}
                     <Box textAlign="center">
                         <Button variant="contained" onClick={handleOpenCategoryModal} sx={{ bgcolor: "green", color: "white", marginTop: 2 }}>
                             Add New Category to Budget
@@ -294,6 +369,13 @@ function Budgets() {
                             required
                             label="Category Amount"
                         />
+                    </FormControl>
+                    <FormControl fullWidth sx={{ marginTop: 2 }}>
+                        <InputLabel>Category Type</InputLabel>
+                        <Select label="Category Type" labelId="typeID" value={newCategoryType} fullWidth onChange={handleCategoryTypeChange}>
+                            <MenuItem value="Expense">Expense</MenuItem>
+                            <MenuItem value="Income">Income</MenuItem>
+                        </Select>
                     </FormControl>
                     <FormControlLabel
                         sx={{ display: "flex", justifyContent: "center" }}
