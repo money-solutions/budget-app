@@ -116,20 +116,11 @@ CREATE TABLE Transactions(
 );
 ```
 
-6. Create the "CanView" Table:
-
-```sql
-CREATE TABLE CanView(
-	ViewerID INT REFERENCES Users(UserID) ON DELETE CASCADE,
-	BudgetID INT REFERENCES Budgets(BudgetID) ON DELETE CASCADE
-);
-```
-
 7. Create the "get_user_by_username" function:
 
 ```sql
 CREATE OR REPLACE FUNCTION get_user_by_username(username_param character varying)
-RETURNS SETOF Users AS 
+RETURNS SETOF Users AS
 $$
 BEGIN
     RETURN QUERY SELECT * FROM Users WHERE username = username_param;
@@ -149,7 +140,7 @@ CREATE OR REPLACE PROCEDURE public.create_user(
 LANGUAGE 'plpgsql'
 AS $BODY$
 BEGIN
-    INSERT INTO Users (Username, Password, Firstname, Lastname, DateCreated) 
+    INSERT INTO Users (Username, Password, Firstname, Lastname, DateCreated)
     VALUES (username_param, password_param, firstname_param, lastname_param, CURRENT_DATE);
 END;
 $BODY$;
@@ -157,7 +148,7 @@ ALTER PROCEDURE public.create_user(character varying, character varying, charact
     OWNER TO postgres;
 ```
 
-9. Create the "mail_list" view:
+9. Create the "email_list" view:
 
 ```sql
 CREATE OR REPLACE VIEW email_list_view AS
