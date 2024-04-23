@@ -16,7 +16,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
-import { InputLabel, FormHelperText, FormControl, OutlinedInput, InputAdornment, FormControlLabel, Checkbox } from "@mui/material";
+import { InputLabel, FormHelperText, FormControl, OutlinedInput, InputAdornment, FormControlLabel, Checkbox, Select, MenuItem } from "@mui/material";
 import axiosInstance from "@/config/axiosConfig";
 
 function Row(props) {
@@ -27,6 +27,7 @@ function Row(props) {
     const [editCategoryModal, setEditCategoryModal] = React.useState(false);
     const [editCategoryName, setEditCategoryName] = React.useState("");
     const [editCategoryAmount, setEditCategoryAmount] = React.useState("");
+    const [editCategoryType, setEditCategoryType] = React.useState("");
     const [editCategoryFieldChanged, setEditCategoryFieldChanged] = React.useState(false);
     const [editCategoryID, setEditCategoryID] = React.useState(null);
 
@@ -41,6 +42,7 @@ function Row(props) {
     const handleOpenEditCategoryModal = (row) => {
         setEditCategoryName(row.categoryname);
         setEditCategoryAmount(row.budgetamount);
+        setEditCategoryType(row.categorytype);
         setEditCategoryID(row.categoryid);
         setEditCategoryModal(true);
     };
@@ -66,6 +68,11 @@ function Row(props) {
     const handleEditCategoryAmountChange = (e) => {
         setEditCategoryFieldChanged(true);
         setEditCategoryAmount(e.target.value);
+    };
+
+    const handleEditCategoryTypeChange = (e) => {
+        setEditCategoryFieldChanged(true);
+        setEditCategoryType(e.target.value);
     };
 
     const handleEditCategory = async () => {
@@ -94,10 +101,10 @@ function Row(props) {
                 <TableCell component="th" scope="row">
                     {row.categoryname}
                 </TableCell>
-                <TableCell>$ {Number(row.budgetamount).toFixed(2)}</TableCell>
-                <TableCell>$ {row.actualamount ? Number(row.actualamount).toFixed(2) : (0).toFixed(2)}</TableCell>
-                <TableCell sx={(Number(row.budgetamount) - Number(row.actualamount)).toFixed(2) > 0 ? { color: "green" } : { color: "red" }}>
-                    $ {(Number(row.budgetamount) - Number(row.actualamount)).toFixed(2)}
+                <TableCell>$ {Math.abs(Number(row.budgetamount)).toFixed(2)}</TableCell>
+                <TableCell>$ {row.actualamount ? Math.abs(Number(row.actualamount)).toFixed(2) : (0).toFixed(2)}</TableCell>
+                <TableCell sx={((Number(row.budgetamount) - Number(row.actualamount)).toFixed(2)) <= 0 ? { color: "green" } : { color: "red" }}>
+                    $ {Math.abs(Number(row.budgetamount) - Number(row.actualamount)).toFixed(2)}
                 </TableCell>
                 <TableCell>
                     <Button variant="contained" color="primary" onClick={() => handleOpenEditCategoryModal(row)}>
@@ -134,7 +141,7 @@ function Row(props) {
                                             </TableCell>
                                             <TableCell>{transactionRow.nickname}</TableCell>
                                             <TableCell>{transactionRow.description}</TableCell>
-                                            <TableCell>$ {Number(transactionRow.amount).toFixed(2)}</TableCell>
+                                            <TableCell sx={Number(transactionRow.amount).toFixed(2) < 0 ? {color: "red"} : {color: "green"}}>$ {Math.abs(Number(transactionRow.amount)).toFixed(2)}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
@@ -162,7 +169,13 @@ function Row(props) {
                             label="Category Amount"
                         />
                     </FormControl>
-
+                    <FormControl fullWidth sx={{ marginTop: 2 }}>
+                        <InputLabel>Category Type</InputLabel>
+                        <Select label="Category Type" labelId="typeID" value={editCategoryType} fullWidth onChange={handleEditCategoryTypeChange}>
+                            <MenuItem value="Expense">Expense</MenuItem>
+                            <MenuItem value="Income">Income</MenuItem>
+                        </Select>
+                    </FormControl>
                     <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
                         <Button disabled={!editCategoryFieldChanged} variant="contained" onClick={handleEditCategory} sx={{ bgcolor: "green", color: "white" }}>
                             Update Category
@@ -208,7 +221,7 @@ export default function BudgetTable(props) {
                         <TableCell />
                         <TableCell style={{ fontWeight: "bold" }}>Category Name</TableCell>
                         <TableCell style={{ fontWeight: "bold" }}>Budget Amount</TableCell>
-                        <TableCell style={{ fontWeight: "bold" }}>Spent Amount</TableCell>
+                        <TableCell style={{ fontWeight: "bold" }}>Actual Amount</TableCell>
                         <TableCell style={{ fontWeight: "bold" }}>Amount Difference</TableCell>
                         <TableCell style={{ fontWeight: "bold" }}>Edit</TableCell>
                         <TableCell style={{ fontWeight: "bold" }}>Delete</TableCell>
