@@ -50,7 +50,7 @@ async function updateUserById(userId, first, last, email, phone) {
 }
 
 async function getUserById(userId) {
-    const query = "SELECT * FROM Users WHERE userID = $1";
+    const query = "SELECT FirstName, LastName, Email, Phone FROM Users WHERE userID = $1";
     const { rows } = await queryDB(query, [userId]);
     return rows.length === 1 ? rows[0] : false;
 }
@@ -62,5 +62,5 @@ module.exports = {
     deleteUser,
     getUserID,
     updateUserById,
-    getUserById
+    getUserById,
 };
