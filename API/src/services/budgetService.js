@@ -30,10 +30,24 @@ async function getBudgets(userID, budgetYear) {
     return rows;
 }
 
+async function getBudgetYears(userID) {
+    const query = "SELECT DISTINCT BudgetYear FROM Budgets WHERE UserID = $1";
+    const { rows } = await queryDB(query, [userID]);
+    return rows;
+}
+
+async function deleteBudget(userID, budgetYear) {
+    const query = "DELETE FROM Budgets WHERE UserID = $1 AND BudgetYear = $2";
+    const { rowCount } = await queryDB(query, [userID, budgetYear]);
+    return rowCount === 12;
+}
+
 module.exports = {
     createBudget,
     isBudgetUnique,
     getBudgetID,
     doesBudgetYearExist,
     getBudgets,
+    getBudgetYears,
+    deleteBudget,
 };

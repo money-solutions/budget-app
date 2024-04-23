@@ -2,7 +2,7 @@ export default async function categoryCreateTest(agent, expect) {
     describe("Create Category Endpoint Test:", () => {
         it("should return status 200 and a success message", async () => {
             const res = await agent.post("/api/category").send({
-                budgetYear: 2020,
+                budgetYear: 2024,
                 budgetMonths: [1, 2, 3, 4, 5, 6, 7, 8],
                 categoryName: "Test Category",
                 categoryType: "Income",

@@ -2,6 +2,7 @@ const { returnTransactions } = require("../services/transactionService");
 const { createTransaction } = require("../services/transactionService");
 const { deleteTransaction } = require("../services/transactionService");
 const { editTransaction } = require("../services/transactionService");
+const { editTransactionCategory } = require("../services/transactionService");
 
 const getTransactions = async (req, res) => {
     try {
@@ -31,7 +32,7 @@ const transactionCreate = async (req, res) => {
         const accountid = req.body.accountid;
         const categoryid = req.body.category;
 
-        if (!description || !amount || !currency || !transactionDate || !accountid || !categoryid) {
+        if (!description || !amount || !currency || !transactionDate || !accountid) {
             return res.status(400).json({ message: "Missing parameters" });
         }
 
@@ -74,7 +75,7 @@ const transactionDelete = async (req, res) => {
 const transactionEdit = async (req, res) => {
     try {
         const userID = req.session.user;
-        
+
         const transactionId = req.body.currentTransaction;
         const description = req.body.description;
         const amount = req.body.amount;
@@ -99,4 +100,28 @@ const transactionEdit = async (req, res) => {
     }
 };
 
-module.exports = { getTransactions, transactionCreate, transactionDelete, transactionEdit };
+const transactionEditCategory = async (req, res) => {
+    try {
+        const userID = req.session.user;
+
+        const transactionID = req.body.transactionid;
+        const categoryID = req.body.categoryid;
+
+        console.log(req.body);
+
+        if (!transactionID) {
+            return res.status(400).json({ message: "Missing parameters" });
+        }
+
+        const isTransactionUpdated = await editTransactionCategory(transactionID, categoryID);
+        if (!isTransactionUpdated) {
+            return res.status(500).json({ message: "Database Server Error." });
+        }
+        const message = "Transaction Updated Successfully!";
+        return res.status(200).json({ message: message });
+    } catch (error) {
+        console.error("Error Updating transaction:", error);
+        return res.status(500).json({ message: "Not Found" });
+    }
+};
+module.exports = { getTransactions, transactionCreate, transactionDelete, transactionEdit, transactionEditCategory };

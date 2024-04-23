@@ -21,8 +21,29 @@ async function getCategories(budgetIDs) {
     return rows;
 }
 
+async function getCategoriesByUser(userID) {
+    const query = "Select CategoryID, CategoryName, BudgetYear, BudgetMonth from Categories NATURAL JOIN Budgets WHERE UserID = $1";
+    const { rows } = await queryDB(query, [userID]);
+    return rows;
+}
+
+async function editCategory(categoryID, categoryName, categoryAmount) {
+    const query = "UPDATE Categories SET CategoryName = $2, BudgetAmount = $3 WHERE categoryID = $1";
+    const { rowCount } = await queryDB(query, [categoryID, categoryName, categoryAmount]);
+    return rowCount === 1;
+}
+
+async function deleteCategory(categoryID) {
+    const query = "DELETE FROM Categories WHERE CategoryID = $1";
+    const { rowCount } = await queryDB(query, [categoryID]);
+    return rowCount === 1;
+}
+
 module.exports = {
     createCategory,
     isCategoryUnique,
     getCategories,
+    getCategoriesByUser,
+    editCategory,
+    deleteCategory,
 };
