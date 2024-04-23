@@ -1,4 +1,4 @@
-const { checkIfUserExists, createUser, getUserID, authenticateUser, deleteUser } = require("../services/userService");
+const { checkIfUserExists, createUser, getUserID, authenticateUser, deleteUser, updateUserById, getUserById } = require("../services/userService");
 const sendResponse200 = require("../utils/sendResponse200");
 
 const userSignup = async (req, res) => {
@@ -101,4 +101,43 @@ const userDelete = async (req, res) => {
 
 };
 
-module.exports = { userSignup, userLogin, userLogout, userDelete };
+const userUpdate = async (req, res) => {
+    const userID = req.session.user;
+    const {firstname, lastname, email, phone} = req.body;
+    try {
+        const isUserUpdated = await updateUserById(userID, firstname, lastname, email, phone);
+        console.log(isUserUpdated);
+        if (isUserUpdated) {
+            console.log(`User with ID: ${userID} updated.`);
+            sendResponse200(res, "User updated.");
+        } else {
+            // Request invalid
+            return res.status(401).json({ message: "Invalid request." });
+        }
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return res.status(500).json({ message: "Not Found" });
+    }
+
+};
+
+const userGet = async (req, res) => {
+    const userID = req.session.user;
+    try {
+        const userInfo = await getUserById(userID);
+        if (userInfo) {
+            console.log(`User with ID: ${userID} retrieved.`);
+            return res.status(200).json({ message: "Retrieved Accounts Successfully!", userInfo })
+        } else {
+            // Request invalid
+            return res.status(401).json({ message: "Invalid request." });
+        }
+    } catch (error) {
+        console.error("Error retrieving user:", error);
+        return res.status(500).json({ message: "Not Found" });
+    }
+
+};
+
+
+module.exports = { userSignup, userLogin, userLogout, userDelete, userUpdate, userGet };
