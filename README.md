@@ -116,7 +116,7 @@ CREATE TABLE Transactions(
 );
 ```
 
-7. Create the "get_user_by_username" function:
+6. Create the "get_user_by_username" function:
 
 ```sql
 CREATE OR REPLACE FUNCTION get_user_by_username(username_param character varying)
@@ -129,7 +129,7 @@ $$ LANGUAGE plpgsql;
 
 ```
 
-8. Create the "create_user" stored procedure:
+7. Create the "create_user" stored procedure:
 
 ```sql
 CREATE OR REPLACE PROCEDURE public.create_user(
@@ -148,7 +148,7 @@ ALTER PROCEDURE public.create_user(character varying, character varying, charact
     OWNER TO postgres;
 ```
 
-9. Create the "email_list" view:
+8. Create the "email_list" view:
 
 ```sql
 CREATE OR REPLACE VIEW email_list_view AS
